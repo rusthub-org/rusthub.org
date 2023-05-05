@@ -45,6 +45,7 @@ query UserByUsernameDetailData(
     introductionHtml
     createdAtYmdhmsz
     createdAtYmdhmsz8
+    hits
     status
     
     keywords {
@@ -89,6 +90,7 @@ query UsersData(
       nickname
       createdAtYmdhmsz
       createdAtYmdhmsz8
+      hits
 
       keywords {
         name
@@ -110,6 +112,22 @@ mutation UserUpdateOneFieldByIdData(
 ) {
   userUpdateOneFieldById(
     userId: $userId
+    fieldName: $fieldName
+    fieldVal: $fieldVal
+    ) {
+      username
+      nickname
+      email
+  }
+}
+
+mutation UserUpdateOneFieldByUsernameData(
+  $username: String!
+  $fieldName: String!
+  $fieldVal: String!
+) {
+  userUpdateOneFieldByUsername(
+    username: $username
     fieldName: $fieldName
     fieldVal: $fieldVal
     ) {

@@ -80,7 +80,7 @@
                   {{ lang "not-setting" }}
                 {{/if}}
               </p>
-              <p class="d-flex pl2 fc-medium">
+              <p class="d-flex fw-wrap pl2 fc-medium">
                 <span class="s-btn-group">
                   {{#if (str-cmp creation_item.status 2 "gte") }}
                     <a class="s-btn s-btn__xs s-btn__outlined fc-danger" href="/{{ language }}/creations/recommended">
@@ -89,15 +89,15 @@
                   {{/if}}
                   <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}">
                     <strong>{{ creation_item.hits }}</strong>
-                    {{ lang "creation-hits" }}
+                    {{ lang "hits" }}
                   </a>
                   <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}">
                     <strong>{{ creation_item.stars }}</strong>
-                    {{ lang "creation-stars" }}
+                    {{ lang "stars" }}
                   </a>
                   <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}">
                     <strong>{{ creation_item.insides }}</strong>
-                    {{ lang "creation-insides" }}
+                    {{ lang "insides" }}
                   </a>
                 </span>
                 <span class="fl-grow1 ta-right pt6 pr6">

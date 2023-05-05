@@ -16,6 +16,8 @@ use crate::models::{
         UsersData, users_data, UserByIdData, user_by_id_data,
         UserByUsernameDetailData, user_by_username_detail_data,
         UserUpdateOneFieldByIdData, user_update_one_field_by_id_data,
+        UserUpdateOneFieldByUsernameData,
+        user_update_one_field_by_username_data,
     },
 };
 
@@ -105,6 +107,22 @@ pub async fn user_index(req: Request<State>) -> tide::Result {
     }
 
     let author_username = req.param("author_username")?;
+
+    let user_update_hits_build_query =
+        UserUpdateOneFieldByUsernameData::build_query(
+            user_update_one_field_by_username_data::Variables {
+                username: author_username.to_string(),
+                field_name: String::from("hits"),
+                field_val: String::from("1"),
+            },
+        );
+    let user_update_hits_query = json!(user_update_hits_build_query);
+    let _creation_update_hits_resp_body: GqlResponse<serde_json::Value> =
+        surf::post(&gql_uri().await)
+            .body(user_update_hits_query)
+            .recv_json()
+            .await?;
+
     let author_by_username_detail_build_query =
         UserByUsernameDetailData::build_query(
             user_by_username_detail_data::Variables {

@@ -12,12 +12,13 @@ random = 逛
 random-creation = 试试手气
 shared-aphorism = 分享格言：
 
+hits = 点击
+insides = 进入
+stars = 星星
+
 more = 更多 ……
 creations-recommended = 最新推荐
 creations-published = 最新发布
-creation-hits = 点击
-creation-insides = 进入
-creation-stars = 星星
 creation-create = 创建新作品
 
 register = 注册

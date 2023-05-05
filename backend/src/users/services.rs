@@ -138,7 +138,13 @@ pub async fn user_update_one_field_by_id(
     let query_doc = doc! {"_id": user_id};
     let update_doc = match field_name.as_str() {
         "status" => {
-            doc! {"$set": {field_name: field_val.parse::<i32>()?}}
+            doc! {"$set": {
+                field_name: field_val.parse::<i32>()?,
+                "updated_at": DateTime::now()
+            }}
+        }
+        "hits" => {
+            doc! {"$inc": {field_name: field_val.parse::<i64>()?}}
         }
         _ => doc! {},
     };
@@ -146,6 +152,16 @@ pub async fn user_update_one_field_by_id(
     coll.update_one(query_doc, update_doc, None).await?;
 
     user_by_id(db, user_id).await
+}
+
+pub async fn user_update_one_field_by_username(
+    db: &Database,
+    username: String,
+    field_name: String,
+    field_val: String,
+) -> GqlResult<User> {
+    let user: User = user_by_username(db, username).await?;
+    user_update_one_field_by_id(db, user._id, field_name, field_val).await
 }
 
 // get user info by email

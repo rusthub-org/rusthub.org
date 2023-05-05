@@ -97,7 +97,7 @@ pub async fn creation_update_one_field_by_id(
                 "updated_at": DateTime::now()
             }}
         }
-        "hits" | "applicants" => {
+        "hits" => {
             doc! {"$inc": {field_name: field_val.parse::<i64>()?}}
         }
         _ => doc! {},

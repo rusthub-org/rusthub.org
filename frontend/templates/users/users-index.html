@@ -35,11 +35,15 @@
             <article class="s-card m8">
               <a href="/{{ ../language }}/user/{{ user_item.username }}">
                 <h2 class="mb4 fs-title fc-theme-secondary-400 truncate">
+                  <span class="s-tag s-tag__sm fs-caption">
+                    {{ user_item.hits }}
+                    {{ lang "hits" }}
+                  </span>
                   {{ user_item.nickname }}
                   <sup class="fw-normal fs-fine">No.{{ user_item.id }}</sup>
                 </h2>
               </a>
-              <p class="mb4 fc-medium">
+              <p class="mb4 fc-medium fs-body1">
                 <strong>{{ lang "registration-time" }}</strong>
                 {{#if (str-cmp ../language "zh-cn") }}
                   {{ user_item.createdAtYmdhmsz8 }}
@@ -47,7 +51,7 @@
                   {{ user_item.createdAtYmdhmsz }}
                 {{/if}}
               </p>
-              <p class="fc-medium">
+              <p class="fc-medium fs-body1">
                 <strong>{{ lang "keys-tags" }}:</strong>
                 {{#if user_item.keywords }}
                   {{#each user_item.keywords as |keyword|}}

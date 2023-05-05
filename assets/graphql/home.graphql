@@ -25,6 +25,7 @@ fragment creations_in_position_fragment on Creation {
   updatedAtYmd8
   hits
   insides
+  stars
   
   coverImage {
     location

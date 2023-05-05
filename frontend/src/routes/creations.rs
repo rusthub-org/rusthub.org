@@ -515,7 +515,7 @@ pub async fn creation_index(req: Request<State>) -> tide::Result {
             creation_update_one_field_by_id_data::Variables {
                 creation_id: creation_id.to_string(),
                 field_name: String::from("hits"),
-                field_val: String::from("3"),
+                field_val: String::from("1"),
             },
         );
     let creation_update_hits_query = json!(creation_update_hits_build_query);

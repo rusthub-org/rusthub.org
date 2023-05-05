@@ -33,6 +33,10 @@
                 <article class="s-card my8">
                     <a href="{{ author_user.website }}" target="_blank">
                         <h2 class="mb6 fs-title fc-theme-secondary-400 truncate">
+                            <span class="s-tag s-tag__sm fs-caption">
+                                {{ author_user.hits }}
+                                {{ lang "hits" }}
+                            </span>
                             {{ author_user.nickname }}
                             <sup class="fw-normal fs-fine">No.{{ author_user.id }}</sup>
                         </h2>

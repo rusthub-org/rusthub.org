@@ -12,12 +12,13 @@ random = R
 random-creation = Random Creation
 shared-aphorism = shared an aphorism: 
 
+hits = Hits
+insides = Insides
+stars = Stars
+
 more = More ...
 creations-recommended = Latest Recommended
 creations-published = Latest Published
-creation-hits = Hits
-creation-insides = Insides
-creation-stars = Stars
 creation-create = Create new Creation
 
 register = Register

@@ -93,6 +93,11 @@ type MutationRoot {
     fieldName: String!
     fieldVal: String!
   ): User!
+  userUpdateOneFieldByUsername(
+    username: String!
+    fieldName: String!
+    fieldVal: String!
+  ): User!
   creationNew(creationNew: CreationNew!): Creation!
   creationUpdateOneFieldById(
     creationId: ObjectId!

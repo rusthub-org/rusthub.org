@@ -55,4 +55,11 @@ pub struct UserUpdateOneFieldByIdData;
     schema_path = "../assets/graphql/schema.graphql",
     query_path = "../assets/graphql/users.graphql"
 )]
+pub struct UserUpdateOneFieldByUsernameData;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "../assets/graphql/schema.graphql",
+    query_path = "../assets/graphql/users.graphql"
+)]
 pub struct WishRandomData;

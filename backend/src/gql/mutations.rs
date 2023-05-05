@@ -74,6 +74,21 @@ impl MutationRoot {
         .await
     }
 
+    // modify user's one field by its username
+    async fn user_update_one_field_by_username(
+        &self,
+        ctx: &Context<'_>,
+        username: String,
+        field_name: String,
+        field_val: String,
+    ) -> GqlResult<User> {
+        let db = &ctx.data_unchecked::<DataSource>().db;
+        users::services::user_update_one_field_by_username(
+            db, username, field_name, field_val,
+        )
+        .await
+    }
+
     // Add new creation
     async fn creation_new(
         &self,
