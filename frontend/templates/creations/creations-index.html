@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+
+  <head>
+    <title>
+      {{#if filter_desc }}{{ lang filter_desc.content }} - {{/if}}
+      {{ lang "creations-list" }} - {{ lang "site-name" }} | {{ lang "site-slogan" }}
+    </title>
+
+    <meta name="keywords" content='{{ lang "creations-list" }},{{ lang "site-name" }},{{ lang "site-slogan" }}'>
+    <meta name="description"
+      content='{{ lang "creations-list" }},{{ lang "site-name" }},{{ lang "site-slogan" }},{{ lang "site-intro" }}'>
+
+    {{> head }}
+  </head>
+
+  <body class="theme-system">
+    {{> header }}
+
+    <main class="ps-relative t64">
+      {{> wish-random }}
+
+      {{!-- google ad 内嵌，自适应 --}}
+      {{!-- <ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article"
+        data-ad-format="fluid" data-ad-client="ca-pub-2498669832870483" data-ad-slot="1938093545"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script> --}}
+
+      <div class="d-flex fw-wrap mt16 mx24 sm:ml4 sm:mr4">
+        <span class="s-btn-group fl-grow1 sm:mb4">
+          <a class="s-btn s-btn__outlined {{ creations-all-selected }}" href="/{{ language }}/creations">
+            {{ lang "all" }}
+          </a>
+          <a class="s-btn s-btn__outlined {{ creations-recommended-selected }}"
+            href="/{{ language }}/creations/recommended">
+            {{ lang "creations-filter-recommended" }}
+          </a>
+          <a class="s-btn s-btn__outlined {{ creations-open-source-selected }}"
+            href="/{{ language }}/creations/open-source">
+            {{ lang "creations-filter-open-source" }}
+          </a>
+          <a class="s-btn s-btn__outlined {{ creations-with-website-selected }}"
+            href="/{{ language }}/creations/with-website">
+            {{ lang "creations-filter-with-website" }}
+          </a>
+        </span>
+
+        <span class="flex--item">
+          <a class="s-btn s-btn__filled is-selected" href="/{{ language }}/creation/new">
+            {{ lang "creation-create" }}
+          </a>
+          <a class="s-btn s-btn__filled is-selected"
+            href="/{{ language }}{{#if user }}/user/{{ user.username }}/creations{{else}}/sign-in{{/if}}">
+            {{ lang "my-creations" }}
+          </a>
+        </span>
+      </div>
+
+      <div class="mt8 mb96 mx16 sm:ml4 sm:mr4">
+
+        <div class="d-grid grid__3 lg:grid__2 sm:grid__1 g12 w100 wmx100 mx-auto">
+          {{#each pagination.currentItems as |creation_item|}}
+            <article class="s-card m8 p8 bs-sm bar-md h:bs-md sm:ai-center">
+              <a href="/{{ ../language }}/creation/{{ creation_item.id }}">
+                <img src='/files/creations/{{ cover-img creation_item.coverImage.location "-thumbnail" }}'>
+                <h2 class="my4 pl2 fs-title fc-theme-secondary-400 truncate">
+                  {{ creation_item.subject }}
+                </h2>
+              </a>
+              <p class="my4 pl2 fc-medium truncate">
+                {{#if creation_item.topics }}
+                  {{#each creation_item.topics as |topic|}}
+                    <a class="s-badge s-badge__sm" href="/{{ ../../language }}/topic/{{ topic.slug }}/creations">
+                      {{ topic.name }}
+                    </a>
+                  {{/each}}
+                {{else}}
+                  <strong>{{ lang "keys-tags" }}:</strong>
+                  {{ lang "not-setting" }}
+                {{/if}}
+              </p>
+              <p class="d-flex pl2 fc-medium">
+                <span class="s-btn-group">
+                  {{#if (str-cmp creation_item.status 2 "gte") }}
+                    <a class="s-btn s-btn__xs s-btn__outlined fc-danger" href="/{{ language }}/creations/recommended">
+                      {{ lang "creations-filter-recommended" }}
+                    </a>
+                  {{/if}}
+                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}">
+                    <strong>{{ creation_item.hits }}</strong>
+                    {{ lang "creation-hits" }}
+                  </a>
+                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}">
+                    <strong>{{ creation_item.stars }}</strong>
+                    {{ lang "creation-stars" }}
+                  </a>
+                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}">
+                    <strong>{{ creation_item.insides }}</strong>
+                    {{ lang "creation-insides" }}
+                  </a>
+                </span>
+                <span class="fl-grow1 ta-right pt6 pr6">
+                  <a class="s-link fw-bold" href="/{{ ../language }}/user/{{ creation_item.user.username }}">
+                    {{ creation_item.user.nickname }}
+                  </a>
+                  {{#if (str-cmp ../language "zh-cn") }}
+                    {{ creation_item.updatedAtYmd8 }}
+                  {{else}}
+                    {{ creation_item.updatedAtYmd }}
+                  {{/if}}
+                </span>
+              </p>
+            </article>
+          {{/each}}
+        </div>
+
+        {{> pagination }}
+      </div>
+
+    </main>
+
+    {{> footer }}
+  </body>
+
+</html>

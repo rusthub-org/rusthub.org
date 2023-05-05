@@ -1,0 +1,34 @@
+users-teams = 创者团队
+my-profile = 我的资料
+
+registration-time = 注册时间：
+
+user-intro = 用户简介
+user-statistics = 用户分析
+
+user-website = 网站：
+user-phone = 手机号码：
+user-im = 交流工具：
+user-view-contact = 查看详细联系信息，请 
+related-creations = 关联作品：
+user-view-creations = 查阅此用户关联的所有作品。
+
+user-activate = 用户账户激活
+user-activated = RustHub 账号激活成功！
+user-re-activate = 用户账户激活 RustHub 账户激活邮件，已重新发送！
+user-activated-result = <span class="fw-bold fc-blue-600">{ $nickname }</span>，祝贺！
+    你的 RustHub 账户已激活成功！
+    <br><br>
+    <span class="fw-bold">用户名</span>：{ $username }；
+    <span class="fw-bold">电子邮件</span>：{ $email }。
+user-re-activate-result = <span class="fw-bold fc-blue-600">{ $nickname }</span>，
+    你的 RustHub 账户激活邮件，已重新发送！
+    <br><br>
+    <span class="fw-bold">用户名</span>：{ $username }；
+    <span class="fw-bold">电子邮件</span>：{ $email }。
+    <br><br>
+    请登录你的邮箱，查阅 RustHub 账户激活邮件，并激活账户。
+user-activate-problem = 若有问题咨询，请
+    <a href="mailto:ask@rusthub.org">联系 RustHub 服务专员（ask@rusthub.org）
+
+users-list-tip = 仅列出已激活的账户。若有问题，请联系 ask@rusthub.org。

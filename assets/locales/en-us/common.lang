@@ -1,0 +1,49 @@
+site-name = RustHub
+site-slogan = Ideas => Creations
+site-intro = Rust ideas once, shining creations today!
+
+nav-creations = Explore Creations
+nav-users = Authors & Teams
+nav-statistics = Statistics
+nav-g = global navigation
+
+switch-theme = Switch Theme
+random = R
+random-creation = Random Creation
+shared-aphorism = shared an aphorism: 
+
+more = More ...
+creations-recommended = Latest Recommended
+creations-published = Latest Published
+creation-hits = Hits
+creation-insides = Insides
+creation-stars = Stars
+creation-create = Create new Creation
+
+register = Register
+sign-in = Sign in
+sign-in-intro = Sign in RustHub
+sign-out = Sign out
+
+user-profile = Your profile
+user-general = General information
+user-contact = Contact information
+user-finance = Finance center
+
+creations-center = Creations center
+creations-matching = Creations Matching
+creations-management = Creations Management
+
+all = All
+search = Search
+secret = Secret
+keys-tags = Keys/Tags
+not-setting = Not setting
+user-risk-tip = Contact information is provided by user self, rusthub.org assumes no responsibility. 
+    Please identify the risks by yourself and beware of being deceived.
+url-tip = Url (please contain http:// or https://)
+
+based-on = Based on 
+    <a href="https://github.com/rusthub-org/rusthub.org" target="_blank">rusthub-org/rusthub.org</a>
+    to Develop
+copyright = All Rights Reserved

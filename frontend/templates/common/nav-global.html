@@ -1,0 +1,16 @@
+{{!-- 注：使用在 2 处位置 --}}
+<a class="s-navigation--item {{ nav-creations-selected }}" href="/{{ language }}/creations">
+    {{ lang "nav-creations" }}
+</a>
+<a class="s-navigation--item {{ nav-users-selected }}" href="/{{ language }}/users">
+    {{ lang "nav-users" }}
+</a>
+<a class="s-navigation--item {{ nav-statistics-selected }}" href="/{{ language }}/statistics">
+    {{ lang "nav-statistics" }}
+</a>
+
+{{#if (str-cmp user.status 10 "gte") }}
+    <a class="s-navigation--item {{ nav-admin-selected }}" href="/admin">
+        管理后台
+    </a>
+{{/if}}

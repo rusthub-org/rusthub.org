@@ -1,0 +1,59 @@
+creations-list = 作品清单
+my-creations = 我的作品
+
+creations-filter-recommended = 推荐
+creations-filter-open-source = 开源
+creations-filter-with-website = 有网站
+
+creation-content = 作品内容
+creation-posted = 发布于
+creation-website = 网站：
+creation-source-url = 源码网址：
+creation-res-files = 资源文件：
+creation-contact-person = 联系人：
+creation-contact-phone = 手机号码：
+creation-contact-im = 交流工具：
+creation-contact-email = 电子邮件：
+creation-view-contact = 查看作品详细联系信息，请 
+creation-risk-tip = 每个作品的所有权利均属于作者，rusthub.org 不负任何责任。
+    若有不当之处，请联系 ask@rusthub.org。
+
+creation-new-subject = 作品主题
+creation-new-subject-tip = 作品主题，10-100 字符
+creation-new-cover-image = 封面图片
+creation-new-keys-tags-tip = 以空格、回车键，或半角逗号分割
+creation-new-description = 作品描述（尽量详细，突出重点。建议 100 个字符以上）
+creation-new-website = 网站
+creation-new-source-url = 源码网址
+creation-new-res-files = 资源文件
+creation-new-contact-person = 联系人
+creation-new-contact-person-tip = 联系人的称呼
+creation-new-contact-email = 电子邮件
+creation-new-contact-email-tip = 联系人常用的电子邮件
+creation-new-contact-phone = 手机号码
+creation-new-contact-phone-tip = 联系人常用的的手机号码
+creation-new-contact-phone-code = 获取验证码
+creation-new-contact-phone-code-tip = 手机收到的验证码
+creation-new-contact-phone-verify = 验证
+creation-new-contact-im = 交流工具
+creation-new-contact-im-tip = 联系人常用的交流工具
+creation-new-create = 创建此作品
+creation-new-create-tip = 创建后，可继续修改
+
+creation-new-result = 祝贺！你的作品 <span class="fw-bold td-underline">{ $subject }</span> 已创建成功。
+    <br><br>
+    作品当前处于<span class="fw-bold fc-danger">审核阶段</span>，将在 8 小时内审核完成。
+    <br><br>
+    如果需要修改作品，请访问你的<span class="fw-bold fc-blue-500">作品中心</span>。
+creation-new-failed = 该作品 <span class="td-underline">{ $subject }</span> 已经在 <span class="fw-bold">{ $create_at }</span> 被创建。
+    <br><br>
+    三天之内，请勿重复创建相同作品。
+    <br><br>
+    使用<span class="fw-bold fc-blue-500">作品提升</span>功能，可让你的作品显示在列表顶部。
+
+creation-new-file-format-limit = - 文件格式须为
+creation-new-file-size-limit = - 文件大小不能超过
+creation-new-file-uploaded = 已上传
+creation-new-file-remove = 移除
+creation-new-file-upload-success = 文件上传成功
+creation-new-file-upload-failure = 文件上传失败\n

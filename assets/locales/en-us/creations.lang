@@ -1,0 +1,59 @@
+creations-list = Creations List
+my-creations = My Creations
+
+creations-filter-recommended = Recommended
+creations-filter-open-source = Open Source
+creations-filter-with-website = With Website
+
+creation-content = Creation Content
+creation-posted = posted at
+creation-website = Website: 
+creation-source-url = Source Url: 
+creation-res-files = Res & Files: 
+creation-contact-person = Contact person: 
+creation-contact-phone = Phone: 
+creation-contact-im = IM tools: 
+creation-contact-email = Email: 
+creation-view-contact = To view contact details of creation, please 
+creation-risk-tip = All rights of each creation belong to the author, rusthub.org assumes no responsibility. 
+    If there is anything improper, please contact ask@rusthub.org.
+
+creation-new-subject = Subject
+creation-new-subject-tip = Creation subject, 10-100 characters
+creation-new-cover-image = Cover Image
+creation-new-keys-tags-tip = Separated by space, enter key, or comma
+creation-new-description = Creation description (In detail, stress the main points. Recommended more than 100 characters)
+creation-new-website = Website
+creation-new-source-url = Source Url
+creation-new-res-files = Res & Files
+creation-new-contact-person = Contacts
+creation-new-contact-person-tip = Name or nickname of contact person
+creation-new-contact-email = Email
+creation-new-contact-email-tip = Frequently-used email of contact person
+creation-new-contact-phone = Phone
+creation-new-contact-phone-tip = Frequently-used phone of contact person
+creation-new-contact-phone-code = Get code
+creation-new-contact-phone-code-tip = Verification code received by your phone
+creation-new-contact-phone-verify = Verify
+creation-new-contact-im = IM tools
+creation-new-contact-im-tip = Frequently-used IM tools of contact person
+creation-new-create = Create the Creation
+creation-new-create-tip = Once created, you can continue to modify
+
+creation-new-result = Congratulate! Your creation <span class="fw-bold td-underline">{ $subject }</span> has been created successfully.
+    <br><br>
+    Currently, the creation is in the <span class="fw-bold fc-danger">review stage</span>, it would be completed within 8 hours.
+    <br><br>
+    If you need to modify the creation, please visit your <span class="fw-bold fc-blue-500">creations center</span>。
+creation-new-failed = This creation <span class="td-underline">{ $subject }</span> has been created on <span class="fw-bold">{ $create_at }</span>.
+    <br><br>
+    Do not create the same creation repeatedly within three days.
+    <br><br>
+    Use the function <span class="fw-bold fc-blue-500">creation hoisting</span>, your creation could be displayed at the top of list.
+
+creation-new-file-format-limit = - File format must be
+creation-new-file-size-limit = - File size must be less than
+creation-new-file-uploaded = Uploaded
+creation-new-file-remove = Remove
+creation-new-file-upload-success = File uploaded successfully
+creation-new-file-upload-failure = File upload failed\n

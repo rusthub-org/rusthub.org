@@ -1,0 +1,233 @@
+fragment CreationsResultFragment on CreationsResult {
+  pageInfo {
+    currentStuff
+    currentPage
+    firstCursor
+    lastCursor
+    hasPreviousPage
+    hasNextPage
+  }
+  resCount {
+    pagesCount
+    totalCount
+  }
+  currentItems {
+    id
+    subject
+    updatedAtYmd
+    updatedAtYmd8
+    hits
+    insides
+    stars
+    status
+    
+    coverImage {
+      location
+    }
+
+    user {
+      username
+      nickname
+    }
+
+    topics {
+      name
+      slug
+    }
+  }
+}
+
+query CreationsData(
+  $fromPage: Int!
+  $firstOid: String!
+  $lastOid: String!
+  $status: Int!
+) {
+  creations(
+    fromPage: $fromPage
+    firstOid: $firstOid
+    lastOid: $lastOid
+    status: $status
+  ) {
+    ...CreationsResultFragment
+  }
+}
+
+query CreationsByUserData(
+  $username: String!
+  $fromPage: Int!
+  $firstOid: String!
+  $lastOid: String!
+  $status: Int!
+) {
+  creationsByUsername(
+    username: $username
+    fromPage: $fromPage
+    firstOid: $firstOid
+    lastOid: $lastOid
+    status: $status
+  ) {
+    ...CreationsResultFragment
+  }
+}
+
+query CreationsByTopicData(
+  $topicSlug: String!
+  $fromPage: Int!
+  $firstOid: String!
+  $lastOid: String!
+  $status: Int!
+) {
+  creationsByTopicSlug(
+    topicSlug: $topicSlug
+    fromPage: $fromPage
+    firstOid: $firstOid
+    lastOid: $lastOid
+    status: $status
+  ) {
+    ...CreationsResultFragment
+  }
+}
+
+query CreationsByFilterData(
+  $filterStr: String!
+  $fromPage: Int!
+  $firstOid: String!
+  $lastOid: String!
+  $status: Int!
+) {
+  creationsByFilter(
+    filterStr: $filterStr
+    fromPage: $fromPage
+    firstOid: $firstOid
+    lastOid: $lastOid
+    status: $status
+  ) {
+    ...CreationsResultFragment
+  }
+}
+
+mutation CreationNewData(
+  $userId: ObjectId!
+  $subject: String!
+  $content: String!
+  $website: String!
+  $sourceUrl: String!
+  $contactUser: String!
+  $contactPhone: String!
+  $contactEmail: String!
+  $contactIm: String!
+  $language: String!
+) {
+  creationNew(
+    creationNew: {
+      userId: $userId
+      subject: $subject
+      content: $content
+      website: $website
+      sourceUrl: $sourceUrl
+      contactUser: $contactUser
+      contactPhone: $contactPhone
+      contactEmail: $contactEmail
+      contactIm: $contactIm
+      language: $language
+    }
+  ) {
+    id
+    subject
+  }
+}
+
+query CreationData(
+  $creationId: ObjectId!
+) {
+  creationById(
+    creationId: $creationId
+  ) {
+    id
+    subject
+    content
+    contentHtml
+    website
+    sourceUrl
+    contactUser
+    contactPhone
+    contactEmail
+    contactIm
+    updatedAtYmdhmsz
+    updatedAtYmdhmsz8
+    hits
+    insides
+    stars
+    status
+    
+    coverImage {
+      location
+    }
+    
+    resFiles {
+      name
+      location
+    }
+
+    user {
+      username
+      nickname
+    }
+
+    topics {
+      name
+      slug
+    }
+  }
+}
+
+mutation CreationUpdateOneFieldByIdData(
+  $creationId: ObjectId!
+  $fieldName: String!
+  $fieldVal: String!
+) {
+  creationUpdateOneFieldById(
+    creationId: $creationId
+    fieldName: $fieldName
+    fieldVal: $fieldVal
+    ) {
+      id
+  }
+}
+
+query CreationRandomData {
+  creationRandomId
+}
+
+mutation FileNewData(
+  $name: String!
+  $kind: Int!
+  $location: String!
+) {
+  fileNew(
+    fileNew: {
+      name: $name
+      kind: $kind
+      location: $location
+    }
+  ) {
+    id
+  }
+}
+
+mutation CreationFileNewData(
+  $userId: ObjectId!
+  $creationId: ObjectId!
+  $fileId: ObjectId!
+) {
+  creationFileNew(
+    creationFileNew: {
+      userId: $userId
+      creationId: $creationId
+      fileId: $fileId
+    }
+  ) {
+    id
+  }
+}

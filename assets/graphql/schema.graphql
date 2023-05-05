@@ -1,0 +1,315 @@
+schema {
+  query: QueryRoot
+  mutation: MutationRoot
+}
+
+type Creation {
+  id: ObjectId!
+  userId: ObjectId!
+  subject: String!
+  content: String!
+  website: String!
+  sourceUrl: String!
+  contactUser: String!
+  contactPhone: String!
+  contactEmail: String!
+  contactIm: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  hits: Int!
+  insides: Int!
+  stars: Int!
+  language: String!
+  status: Int!
+  coverImage: File!
+  resFiles: [File!]!
+  contentHtml: String!
+  user: User!
+  topics: [Topic!]!
+  createdAtYmd: String!
+  createdAtYmd8: String!
+  updatedAtYmd: String!
+  updatedAtYmd8: String!
+  createdAtYmdhmsz: String!
+  createdAtYmdhmsz8: String!
+  updatedAtYmdhmsz: String!
+  updatedAtYmdhmsz8: String!
+}
+
+type CreationFile {
+  id: ObjectId!
+  userId: ObjectId!
+  creationId: ObjectId!
+  fileId: ObjectId!
+}
+
+input CreationFileNew {
+  userId: ObjectId!
+  creationId: ObjectId!
+  fileId: ObjectId!
+}
+
+input CreationNew {
+  userId: ObjectId!
+  subject: String!
+  content: String!
+  website: String!
+  sourceUrl: String!
+  contactUser: String!
+  contactPhone: String!
+  contactEmail: String!
+  contactIm: String!
+  language: String!
+}
+
+type CreationsResult {
+  pageInfo: PageInfo!
+  resCount: ResCount!
+  currentItems: [Creation!]!
+}
+
+scalar DateTime
+
+type File {
+  id: ObjectId!
+  name: String!
+  kind: Int!
+  location: String!
+  status: Int!
+}
+
+input FileNew {
+  name: String!
+  kind: Int!
+  location: String!
+}
+
+type MutationRoot {
+  userRegister(userNew: UserNew!): User!
+  userChangePassword(pwdCur: String!, pwdNew: String!, token: String!): User!
+  userUpdateProfile(userNew: UserNew!, token: String!): User!
+  userUpdateOneFieldById(
+    userId: ObjectId!
+    fieldName: String!
+    fieldVal: String!
+  ): User!
+  creationNew(creationNew: CreationNew!): Creation!
+  creationUpdateOneFieldById(
+    creationId: ObjectId!
+    fieldName: String!
+    fieldVal: String!
+  ): Creation!
+  fileNew(fileNew: FileNew!): File!
+  creationFileNew(creationFileNew: CreationFileNew!): CreationFile!
+  topicNew(topicNew: TopicNew!): Topic!
+  topicsNew(topicNames: String!): [Topic!]!
+  topicUserNew(topicUserNew: TopicUserNew!): TopicUser!
+  topicCreationNew(topicCreationNew: TopicCreationNew!): TopicCreation!
+  wishNew(wishNew: WishNew!): Wish!
+}
+
+scalar ObjectId
+
+type PageInfo {
+  currentStuff: String
+  currentPage: Int
+  firstCursor: ObjectId
+  lastCursor: ObjectId
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+}
+
+type QueryRoot {
+  userSignIn(signature: String!, password: String!): SignInfo!
+  userById(id: ObjectId!): User!
+  userByEmail(email: String!): User!
+  userByUsername(username: String!): User!
+  users(
+    fromPage: Int!
+    firstOid: String!
+    lastOid: String!
+    status: Int!
+  ): UsersResult!
+  creationById(creationId: ObjectId!): Creation!
+  creationRandomId: ObjectId!
+  creations(
+    fromPage: Int!
+    firstOid: String!
+    lastOid: String!
+    status: Int!
+  ): CreationsResult!
+  creationsInPosition(
+    username: String!
+    position: String!
+    limit: Int!
+  ): [Creation!]!
+  creationsByUserId(
+    userId: ObjectId!
+    fromPage: Int!
+    firstOid: String!
+    lastOid: String!
+    status: Int!
+  ): CreationsResult!
+  creationsByUsername(
+    username: String!
+    fromPage: Int!
+    firstOid: String!
+    lastOid: String!
+    status: Int!
+  ): CreationsResult!
+  creationsByTopicId(
+    topicId: ObjectId!
+    fromPage: Int!
+    firstOid: String!
+    lastOid: String!
+    status: Int!
+  ): CreationsResult!
+  creationsByTopicSlug(
+    topicSlug: String!
+    fromPage: Int!
+    firstOid: String!
+    lastOid: String!
+    status: Int!
+  ): CreationsResult!
+  creationsByFilter(
+    filterStr: String!
+    fromPage: Int!
+    firstOid: String!
+    lastOid: String!
+    status: Int!
+  ): CreationsResult!
+  fileById(id: ObjectId!): File!
+  fileByKindCreationId(
+    creationId: ObjectId!
+    fileKind: Int!
+    fileStatus: Int!
+  ): File!
+  filesByKindCreationId(
+    creationId: ObjectId!
+    fileKind: Int!
+    fileStatus: Int!
+  ): [File!]!
+  topicById(id: ObjectId!): Topic!
+  topicBySlug(slug: String!): Topic!
+  topics: [Topic!]!
+  topicsByCreationId(creationId: ObjectId!): [Topic!]!
+  keywordsByUserId(userId: ObjectId!): [Topic!]!
+  keywordsByUsername(username: String!): [Topic!]!
+  topicsByUserId(userId: ObjectId!): [Topic!]!
+  topicsByUsername(username: String!): [Topic!]!
+  wishes(status: Int!): [Wish!]!
+  wishRandom(username: String!): Wish!
+}
+
+type ResCount {
+  pagesCount: Int
+  totalCount: Int
+}
+
+type SignInfo {
+  username: String!
+  token: String!
+}
+
+type Topic {
+  id: ObjectId!
+  name: String!
+  quotes: Int!
+  slug: String!
+  creations: CreationsResult!
+}
+
+type TopicCreation {
+  id: ObjectId!
+  userId: ObjectId!
+  creationId: ObjectId!
+  topicId: ObjectId!
+}
+
+input TopicCreationNew {
+  userId: ObjectId!
+  creationId: ObjectId!
+  topicId: ObjectId!
+}
+
+input TopicNew {
+  name: String!
+  quotes: Int! = 1
+}
+
+type TopicUser {
+  id: ObjectId!
+  userId: ObjectId!
+  topicId: ObjectId!
+}
+
+input TopicUserNew {
+  userId: ObjectId!
+  topicId: ObjectId!
+}
+
+type User {
+  id: ObjectId!
+  username: String!
+  email: String!
+  cred: String!
+  nickname: String!
+  phoneNumber: String!
+  phonePublic: Boolean!
+  imAccount: String!
+  imPublic: Boolean!
+  website: String!
+  introduction: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  hits: Int!
+  status: Int!
+  introductionHtml: String!
+  createdAtYmdhmsz: String!
+  createdAtYmdhmsz8: String!
+  updatedAtYmdhmsz: String!
+  updatedAtYmdhmsz8: String!
+  keywords: [Topic!]!
+  topics: [Topic!]!
+  creations(status: Int!): CreationsResult!
+}
+
+input UserNew {
+  username: String!
+  email: String!
+  cred: String!
+  nickname: String!
+  phoneNumber: String!
+  phonePublic: Boolean!
+  imAccount: String!
+  imPublic: Boolean!
+  website: String!
+  introduction: String!
+}
+
+type UsersResult {
+  pageInfo: PageInfo!
+  resCount: ResCount!
+  currentItems: [User!]!
+}
+
+type Wish {
+  id: ObjectId!
+  userId: ObjectId!
+  aphorism: String!
+  author: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  status: Int!
+  createdAtYmdhmsz: String!
+  createdAtYmdhmsz8: String!
+  updatedAtYmdhmsz: String!
+  updatedAtYmdhmsz8: String!
+  user: User!
+}
+
+input WishNew {
+  userId: ObjectId!
+  aphorism: String!
+  author: String!
+}

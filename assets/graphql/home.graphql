@@ -1,0 +1,88 @@
+query HomeData(
+  $username: String!
+) {
+  recommendedCreations: creationsInPosition(
+    username: $username
+    position: "recommended"
+    limit: 6
+  ) {
+    ...creations_in_position_fragment
+  }
+
+  publishedCreations: creationsInPosition(
+    username: $username
+    position: "published"
+    limit: 12
+  ) {
+    ...creations_in_position_fragment
+  }
+}
+
+fragment creations_in_position_fragment on Creation {
+  id
+  subject
+  updatedAtYmd
+  updatedAtYmd8
+  hits
+  insides
+  
+  coverImage {
+    location
+  }
+
+  topics {
+    name
+    slug
+  }
+  
+  user {
+    username
+    nickname
+  }
+}
+
+mutation RegisterData(
+  $username: String!
+  $email: String!
+  $cred: String!
+  $nickname: String!
+  $phoneNumber: String!
+  $phonePublic: Boolean!
+  $imAccount: String!
+  $imPublic: Boolean!
+  $website: String!
+  $introduction: String!
+) {
+  userRegister(
+    userNew: {
+      username: $username
+      email: $email
+      cred: $cred
+      nickname: $nickname
+      phoneNumber: $phoneNumber
+      phonePublic: $phonePublic
+      imAccount: $imAccount
+      imPublic: $imPublic
+      website: $website
+      introduction: $introduction
+    }
+  ) {
+    id
+    username
+    email
+    nickname
+  }
+}
+
+query SignInData(
+  $signature: String!
+  $password: String!
+) {
+  userSignIn(
+    signature: $signature
+    password: $password
+  ) {
+    username
+    token
+  }
+}

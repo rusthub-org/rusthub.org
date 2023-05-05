@@ -1,0 +1,49 @@
+site-name = RustHub
+site-slogan = 创意 => 作品
+site-intro = 曾是生锈创意，当今闪亮作品！
+
+nav-creations = 探索作品
+nav-users = 创者团队
+nav-statistics = 数据统计
+nav-g = 全局导航
+
+switch-theme = 切换色彩模式
+random = 逛
+random-creation = 试试手气
+shared-aphorism = 分享格言：
+
+more = 更多 ……
+creations-recommended = 最新推荐
+creations-published = 最新发布
+creation-hits = 点击
+creation-insides = 进入
+creation-stars = 星星
+creation-create = 创建新作品
+
+register = 注册
+sign-in = 签入
+sign-in-intro = 签入 RustHub
+sign-out = 签出
+
+user-profile = 用户资料
+user-general = 基本信息
+user-contact = 联系方式
+user-finance = 财务中心
+
+creations-center = 作品中心
+creations-matching = 作品匹配
+creations-management = 作品管理
+
+all = 全部
+search = 查询
+secret = 保密
+keys-tags = 关键词/标签
+not-setting = 未设定
+user-risk-tip = 联系方式由用户自己提供，rusthub.org 不负任何法律责任。
+    请自行甄别风险，谨防上当受骗。
+url-tip = 网址（包含 http:// 或 https://）
+
+based-on = 基于 
+    <a href="https://github.com/rusthub-org/rusthub.org" target="_blank">rusthub-org/rusthub.org</a>
+    定制
+copyright = 版权所有

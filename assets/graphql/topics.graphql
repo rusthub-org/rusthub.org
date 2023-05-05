@@ -1,0 +1,52 @@
+mutation TopicsNewData(
+  $topicNames: String!
+) {
+  topicsNew(
+    topicNames: $topicNames
+  ) {
+    id
+  }
+}
+
+query TopicBySlugData(
+  $slug: String!
+) {
+  topicBySlug(
+    slug: $slug
+  ) {
+    id
+    name
+    quotes
+    slug
+  }
+}
+
+mutation TopicUserNewData(
+  $userId: ObjectId!
+  $topicId: ObjectId!
+) {
+  topicUserNew(
+    topicUserNew: {
+      userId: $userId
+      topicId: $topicId
+    }
+  ) {
+    id
+  }
+}
+
+mutation TopicCreationNewData(
+  $userId: ObjectId!
+  $creationId: ObjectId!
+  $topicId: ObjectId!
+) {
+  topicCreationNew(
+    topicCreationNew: {
+      userId: $userId
+      creationId: $creationId
+      topicId: $topicId
+    }
+  ) {
+    id
+  }
+}

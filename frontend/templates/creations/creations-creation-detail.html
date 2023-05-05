@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+
+    <head>
+        <title>
+            {{ creation.subject }} - {{ lang "creations-list" }} -
+            {{ lang "site-name" }} | {{ lang "site-slogan" }}
+        </title>
+
+        <meta name="keywords"
+            content='{{#each creation.topics as |topic|}}{{ topic.name }}{{#unless @last }},{{/unless}}{{/each}}'>
+        <meta name="description" content="{{ str-cut creation.content 100 }}">
+
+        {{> head }}
+        <link rel="stylesheet" href="/static/css/night-owl.min.css">
+    </head>
+
+    <body class="theme-system">
+        {{> header }}
+
+        <main class="ps-relative t64">
+            {{> wish-random }}
+
+            {{!-- google ad 内嵌，自适应 --}}
+            {{!-- <ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article"
+                data-ad-format="fluid" data-ad-client="ca-pub-2498669832870483" data-ad-slot="1938093545"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script> --}}
+
+            <div class="mt16 mb96 mx24 sm:ml4 sm:mr4">
+
+                <span class="ml8 fc-danger fs-fine">{{ lang "creation-risk-tip" }}</span>
+                <article class="s-card my12">
+                    <h1 class="mb6">
+                        <a href="{{ creation.website }}" target="_blank">
+                            {{ creation.subject }}
+                            <sup class="fw-normal fs-fine">No.{{ creation.id }}</sup>
+                        </a>
+                        {{#if (str-cmp creation.status 2 "gte") }}
+                            <a class="ml8 s-tag s-tag__moderator fw-normal fs-body1"
+                                href="/{{ language }}/creations/recommended">
+                                {{ lang "creations-filter-recommended" }}
+                            </a>
+                        {{/if}}
+                    </h1>
+                    <p class="my6 fs-body1">
+                        <a class="s-link fw-bold" href="/{{ language }}/user/{{ creation.user.username }}">
+                            {{ creation.user.nickname }}
+                        </a>
+                        {{ lang "creation-posted" }}
+                        {{#if (str-cmp language "zh-cn") }}
+                            {{ creation.updatedAtYmdhmsz8 }}
+                        {{else}}
+                            {{ creation.updatedAtYmdhmsz }}
+                        {{/if}}
+                    </p>
+                    <p class="my6 pl4 fs-body1">
+                        <a href="/{{ language }}/creation/{{ creation.id }}">
+                            <strong>{{ creation.hits }}</strong>
+                            {{ lang "creation-hits" }}
+                        </a>
+                        <span class="mx4 fc-red-600">/</span>
+                        <a href="/{{ language }}/creation/{{ creation.id }}">
+                            <strong>{{ creation.stars }}</strong>
+                            {{ lang "creation-stars" }}
+                        </a>
+                        <span class="mx4 fc-red-600">/</span>
+                        <a href="/{{ language }}/creation/{{ creation.id }}">
+                            <strong>{{ creation.insides }}</strong>
+                            {{ lang "creation-insides" }}
+                        </a>
+                    </p>
+
+                    <p class="my6 p4 fw-bold bg-blue-100 fc-blue-900">
+                        💥 {{ lang "creation-content" }}
+                    </p>
+
+                    <p class="my6 fs-body1">
+                        <strong>{{ lang "keys-tags" }}:</strong>
+                        {{#if creation.topics }}
+                            {{#each creation.topics as |topic|}}
+                                <a class="s-badge ml4 mb2 fs-body1"
+                                    href="/{{ ../language }}/topic/{{ topic.slug }}/creations">
+                                    {{ topic.name }}
+                                </a>
+                            {{/each}}
+                        {{else}}
+                            {{ lang "not-setting" }}
+                        {{/if}}
+                    </p>
+                    <section class="my6 pb8 px8 ba bar-lg bc-black-200 fs-body2">
+                        <div class="pt12 px4 pb16">
+                            {{{ creation.contentHtml }}}
+                        </div>
+                        <img src="/files/creations/{{ cover-img creation.coverImage.location }}">
+                    </section>
+                    <p class="d-flex my6 fs-body1">
+                        <strong class="flex--item ws-nowrap">{{ lang "creation-res-files" }}</strong>
+                        <span class="flex--item pl4">
+                            {{#if creation.resFiles }}
+                                {{#each creation.resFiles as |res_file| }}
+                                    <a href="/files/creations/{{ res_file.location }}" target="_blank"
+                                        download='{{ lang "site-name" }}-{{ ../creation.subject }}-{{ res_file.name }}'>
+                                        {{ add-op @index 1 }}
+                                        {{ res_file.name }}
+                                        <br>
+                                    </a>
+                                {{/each}}
+                            {{else}}
+                                {{ lang "not-setting" }}
+                            {{/if}}
+                        </span>
+                    </p>
+                    <p class="my6 fs-body1">
+                        <strong>{{ lang "creation-website" }}</strong>
+                        {{#if creation.website }}
+                            <a href="{{ creation.website }}" target="_blank">
+                                {{ creation.website }}
+                            </a>
+                        {{else}}
+                            {{ lang "not-setting" }}
+                        {{/if}}
+                    </p>
+                    <p class="my6 fs-body1">
+                        <strong>{{ lang "creation-source-url" }}</strong>
+                        {{#if creation.sourceUrl }}
+                            <a href="{{ creation.sourceUrl }}" target="_blank">
+                                {{ creation.sourceUrl }}
+                            </a>
+                        {{else}}
+                            {{ lang "not-setting" }}
+                        {{/if}}
+                    </p>
+
+                    <p class="my6 p4 fw-bold bg-blue-100 fc-blue-900">
+                        💥 {{ lang "user-contact" }}
+                    </p>
+
+                    <p class="my6 fs-body1">
+                        <strong>{{ lang "creation-contact-person" }}</strong>
+                        {{ creation.contactUser }}
+                    </p>
+                    {{#if sign-in }}
+                        <p class="my6 fs-body1">
+                            <strong>{{ lang "creation-contact-phone" }}</strong>
+                            {{ creation.contactPhone }}
+                        </p>
+                        <p class="my6 fs-body1">
+                            <strong>{{ lang "creation-contact-email" }}</strong>
+                            {{ creation.contactEmail }}
+                        </p>
+                        <p class="my6 fs-body1">
+                            <strong>{{ lang "creation-contact-im" }}</strong>
+                            {{ creation.contactIm }}
+                        </p>
+                    {{else}}
+                        <p class="my6 fs-body1">
+                            {{ lang "creation-view-contact" }}
+                            <a class="fw-bold" href="/{{ language }}/sign-in" target="_blank">
+                                {{ lang "sign-in-intro" }}
+                            </a>
+                        </p>
+                    {{/if}}
+                    <br>
+                    <span class="fc-danger fs-fine">{{ lang "user-risk-tip" }}</span>
+                </article>
+
+            </div>
+
+        </main>
+
+        {{> footer }}
+        <script src="/static/js/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
+    </body>
+
+</html>
