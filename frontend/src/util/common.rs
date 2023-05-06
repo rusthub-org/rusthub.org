@@ -103,15 +103,28 @@ pub fn get_lang_msg(
 }
 
 fn get_lang_res(root_tpl: &str) -> Vec<&str> {
+    let mut tpl_lang_res = vec!["common.lang"];
     if let Some(dir) = root_tpl.split_once("_") {
         match dir.0 {
-            "admin" | "creations" => {
-                vec!["common.lang", "pagination.lang", "creations.lang"]
+            "users" => {
+                tpl_lang_res.push("users.lang");
+                tpl_lang_res.push("pagination.lang");
             }
-            "users" => vec!["common.lang", "pagination.lang", "users.lang"],
-            _ => vec![],
+            "creations" => {
+                tpl_lang_res.push("creations.lang");
+                tpl_lang_res.push("pagination.lang");
+            }
+            "admin" => {
+                tpl_lang_res.push("admin.lang");
+                tpl_lang_res.push("users.lang");
+                tpl_lang_res.push("creations.lang");
+                tpl_lang_res.push("pagination.lang");
+            }
+            _ => (),
         }
     } else {
-        vec!["common.lang", "home.lang"]
+        tpl_lang_res.push("home.lang");
     }
+
+    tpl_lang_res
 }

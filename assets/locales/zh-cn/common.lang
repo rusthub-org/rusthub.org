@@ -1,10 +1,11 @@
 site-name = RustHub
 site-slogan = 创意 => 作品
-site-intro = 曾是生锈创意，当今闪亮作品！
+site-intro = 昨日生锈创意，今天闪亮作品！
 
 nav-creations = 探索作品
-nav-users = 创者团队
+nav-users = 创客团队
 nav-statistics = 数据统计
+nav-admin = 管理控制台
 nav-g = 全局导航
 
 switch-theme = 切换色彩模式
@@ -19,7 +20,6 @@ stars = 星星
 more = 更多 ……
 creations-recommended = 最新推荐
 creations-published = 最新发布
-creation-create = 创建新作品
 
 register = 注册
 sign-in = 签入
@@ -29,7 +29,6 @@ sign-out = 签出
 user-profile = 用户资料
 user-general = 基本信息
 user-contact = 联系方式
-user-finance = 财务中心
 
 creations-center = 作品中心
 creations-matching = 作品匹配

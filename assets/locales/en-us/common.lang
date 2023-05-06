@@ -1,10 +1,11 @@
 site-name = RustHub
 site-slogan = Ideas => Creations
-site-intro = Rust ideas once, shining creations today!
+site-intro = Rust ideas yesterday, shining creations today!
 
 nav-creations = Explore Creations
-nav-users = Authors & Teams
+nav-users = Makers & Teams
 nav-statistics = Statistics
+nav-admin = Admin Dashboard
 nav-g = global navigation
 
 switch-theme = Switch Theme
@@ -19,7 +20,6 @@ stars = Stars
 more = More ...
 creations-recommended = Latest Recommended
 creations-published = Latest Published
-creation-create = Create new Creation
 
 register = Register
 sign-in = Sign in
@@ -29,7 +29,6 @@ sign-out = Sign out
 user-profile = Your profile
 user-general = General information
 user-contact = Contact information
-user-finance = Finance center
 
 creations-center = Creations center
 creations-matching = Creations Matching

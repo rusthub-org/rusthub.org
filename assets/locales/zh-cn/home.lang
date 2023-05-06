@@ -20,7 +20,7 @@ user-register = 用户注册
 user-register-intro = 注册 RustHub
 
 register-username = 用户名
-register-username-tip = 字符范围：a-z、_-、0-9
+register-username-tip = 用户名：5-30 字符，范围：a-z、_-、0-9
 register-email = 电子邮件
 register-email-tip = 常用电子邮件地址
 register-password = 密码
@@ -31,7 +31,7 @@ register-phone = 手机号码
 register-phone-tip = 常用手机号码
 register-public = 公开
 register-im = 交流工具
-register-im-tip = 微信、QQ、公开邮箱、防骚扰电话等
+register-im-tip = 你经常使用的交流工具，如微信、QQ、邮箱、电话等
 register-website = 网站
 register-topics = 优势、关键词
 register-topics-tip = 以空格、回车键，或半角逗号分割

@@ -22,16 +22,6 @@ pub async fn push_res(app: &mut Server<State>) {
         .serve_file(format!("{}{}", tpls_dir().await, "sitemap.txt"))
         .unwrap_or_default();
 
-    let mut admin = app.at("/admin");
-    admin.at("/").get(super::routes::admin::admin_index);
-    admin.at("/creations").get(super::routes::admin::creations_admin);
-    admin
-        .at("/creation/:creation_id")
-        .get(super::routes::admin::creation_admin);
-    admin
-        .at("/creation/:creation_id/:field_name/:field_val")
-        .get(super::routes::admin::creation_update_one_field);
-
     let mut home = app.at("/:language");
     home.at("/").get(super::routes::home::index);
     home.at("/register")
@@ -71,9 +61,19 @@ pub async fn push_res(app: &mut Server<State>) {
         .at("/file/new/:file_name/:file_kind")
         .put(super::routes::creations::file_new);
 
-    // let mut topics = app.at("/topics");
+    // let mut topics = home.at("/topics");
     let mut topic = home.at("/topic");
     topic
         .at("/:topic_slug/creations")
         .get(super::routes::creations::creations_by_topic);
+
+    let mut admin = home.at("/admin");
+    admin.at("/").get(super::routes::admin::admin_index);
+    admin.at("/creations").get(super::routes::admin::creations_admin);
+    admin
+        .at("/creation/:creation_id")
+        .get(super::routes::admin::creation_admin);
+    admin
+        .at("/creation/:creation_id/:field_name/:field_val")
+        .get(super::routes::admin::admin_creation_update_one_field);
 }

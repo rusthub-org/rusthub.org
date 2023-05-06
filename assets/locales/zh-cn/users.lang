@@ -1,11 +1,11 @@
-users-teams = 创者团队
+users-teams = 创客团队
 my-profile = 我的资料
 
-registration-time = 注册时间：
+users-list-tip = 仅列出已激活的账户。若有问题，请联系 ask@rusthub.org。
 
 user-intro = 用户简介
 user-statistics = 用户分析
-
+user-registration-time = 注册时间：
 user-website = 网站：
 user-phone = 手机号码：
 user-im = 交流工具：
@@ -30,5 +30,3 @@ user-re-activate-result = <span class="fw-bold fc-blue-600">{ $nickname }</span>
     请登录你的邮箱，查阅 RustHub 账户激活邮件，并激活账户。
 user-activate-problem = 若有问题咨询，请
     <a href="mailto:ask@rusthub.org">联系 RustHub 服务专员（ask@rusthub.org）
-
-users-list-tip = 仅列出已激活的账户。若有问题，请联系 ask@rusthub.org。

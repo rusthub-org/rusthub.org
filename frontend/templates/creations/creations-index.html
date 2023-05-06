@@ -7,9 +7,10 @@
       {{ lang "creations-list" }} - {{ lang "site-name" }} | {{ lang "site-slogan" }}
     </title>
 
-    <meta name="keywords" content='{{ lang "creations-list" }},{{ lang "site-name" }},{{ lang "site-slogan" }}'>
+    <meta name="keywords"
+      content='{{#if filter_desc }}{{ lang filter_desc.content }},{{/if}}{{ lang "creations-list" }},{{ lang "site-name" }},{{ lang "site-slogan" }}'>
     <meta name="description"
-      content='{{ lang "creations-list" }},{{ lang "site-name" }},{{ lang "site-slogan" }},{{ lang "site-intro" }}'>
+      content='{{#if filter_desc }}{{ lang filter_desc.content }},{{/if}}{{ lang "creations-list" }},{{ lang "site-name" }},{{ lang "site-slogan" }},{{ lang "site-intro" }}'>
 
     {{> head }}
   </head>
@@ -48,7 +49,7 @@
 
         <span class="flex--item">
           <a class="s-btn s-btn__filled is-selected" href="/{{ language }}/creation/new">
-            {{ lang "creation-create" }}
+            {{ lang "creation-new" }}
           </a>
           <a class="s-btn s-btn__filled is-selected"
             href="/{{ language }}{{#if user }}/user/{{ user.username }}/creations{{else}}/sign-in{{/if}}">

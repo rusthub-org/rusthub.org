@@ -44,9 +44,8 @@
                                 </label>
                                 <div class="d-flex fl-grow1 ps-relative">
                                     <input class="flex--item s-input blr0" type="text" name="username" id="username"
-                                        minlength="6" maxlength="36"
-                                        onkeyup="this.value=this.value.replace(/[^a-z0-9_-]/g,'');"
-                                        placeholder='{{ lang "register-username-tip" }}'
+                                        onkeyup="this.value=this.value.replace(/[^a-z0-9_-]/g,'');" minlength="5"
+                                        maxlength="30" placeholder='{{ lang "register-username-tip" }}'
                                         aria-label='{{ lang "register-username-tip" }}' required>
                                 </div>
                             </div>

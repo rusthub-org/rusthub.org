@@ -1,0 +1,18 @@
+admin-dashboard = 管理控制台
+
+admin-creations = 作品管理
+admin-users = 创客管理
+
+admin-creation-batched = 已群发
+admin-creation-recommended = 已推荐
+admin-creation-approved = 已审核
+admin-creation-pending = 待审核
+admin-creation-draft = 草稿
+admin-creation-rejected = 已拒绝
+admin-creation-deleted = 已删除
+
+admin-creation-batch = 群发
+admin-creation-recommend = 推荐
+admin-creation-approve = 审核通过并发布
+admin-creation-reject = 审核不通过
+admin-creation-delete = 删除

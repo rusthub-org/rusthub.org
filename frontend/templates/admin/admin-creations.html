@@ -2,7 +2,15 @@
 <html lang="{{ language }}">
 
   <head>
-    <title>项目列表 - RustHub | 想象、编程、分享</title>
+    <title>
+      {{ lang "admin-creations" }} -
+      {{ lang "admin-dashboard" }} - {{ lang "site-name" }} | {{ lang "site-slogan" }}
+    </title>
+
+    <meta name="keywords"
+      content='{{ lang "admin-creations" }},{{ lang "admin-dashboard" }},{{ lang "site-name" }},{{ lang "site-slogan" }}'>
+    <meta name="description"
+      content='{{ lang "admin-creations" }},{{ lang "admin-dashboard" }},{{ lang "site-name" }},{{ lang "site-slogan" }},{{ lang "site-intro" }}'>
 
     {{> head }}
   </head>
@@ -14,52 +22,60 @@
 
       <div class="mt16 mb96 mx24 sm:ml4 sm:mr4">
         {{!-- google ad 内嵌，自适应 --}}
-        <ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article"
+        {{!-- <ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article"
           data-ad-format="fluid" data-ad-client="ca-pub-2498669832870483" data-ad-slot="1938093545"></ins>
         <script>
           (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        </script> --}}
 
-        <div class="d-grid grid__4 lg:grid__2 sm:grid__1 g12 w100 wmx100 mx-auto">
+        <div class="d-grid grid__3 lg:grid__2 sm:grid__1 g12 w100 wmx100 mx-auto">
           {{#each pagination.currentItems as |creation_item|}}
-            <article class="s-card my8 p4">
-              <a href="/admin/creation/{{ creation_item.id }}" target="_blank">
-                <img src='/files/creations/{{ cover-img creation_item.coverImage.location "-thumbnail" }}'>
+            <article class="s-card m8 p8 bs-sm bar-md h:bs-md sm:ai-center">
+              <a class="my4 fs-body3 fw-bold fc-theme-secondary-400"
+                href="/{{ ../language }}/admin/creation/{{ creation_item.id }}" target="_blank">
+                {{#if (str-cmp creation_item.status -3) }}
+                  <span class="mr2 s-tag s-tag__moderator fw-normal fs-caption">
+                    {{ lang "admin-creation-deleted" }}
+                  </span>
+                {{/if}}
+                {{#if (str-cmp creation_item.status -2 "lte") }}
+                  <span class="mr2 s-tag s-tag__moderator fw-normal fs-caption">
+                    {{ lang "admin-creation-rejected" }}
+                  </span>
+                {{/if}}
+                {{#if (str-cmp creation_item.status -1) }}
+                  <span class="mr2 s-tag s-tag__moderator fw-normal fs-caption">
+                    {{ lang "admin-creation-draft" }}
+                  </span>
+                {{/if}}
+                {{#if (str-cmp creation_item.status 0) }}
+                  <span class="mr2 s-tag s-tag__moderator fw-normal fs-caption">
+                    {{ lang "admin-creation-pending" }}
+                  </span>
+                {{/if}}
+                {{#if (str-cmp creation_item.status 1 "gte") }}
+                  <span class="mr2 s-tag s-tag__moderator fw-normal fs-caption">
+                    {{ lang "admin-creation-approved" }}
+                  </span>
+                {{/if}}
+                {{#if (str-cmp creation_item.status 2 "gte") }}
+                  <span class="mr2 s-tag s-tag__moderator fw-normal fs-caption">
+                    {{ lang "admin-creation-recommended" }}
+                  </span>
+                {{/if}}
+                {{#if (str-cmp creation_item.status 3 "gte") }}
+                  <span class="mr2 s-tag s-tag__moderator fw-normal fs-caption">
+                    {{ lang "admin-creation-batched" }}
+                  </span>
+                {{/if}}
+
+                <sup class="fw-normal fs-fine">No.{{ creation_item.id }}</sup>
+                {{ creation_item.subject }}
               </a>
-              <h3 class="fw-bold fs-body3 fc-theme-secondary-400 my2">
-                <a href="/admin/creation/{{ creation_item.id }}" target="_blank">
-                  {{ creation_item.subject }}
-                </a>
-                <span class="ml8 s-tag s-tag__muted fw-normal fs-body1">{{ creation.id }}</span>
-                {{#if (str-cmp creation.status -3) }}
-                  <span class="ml8 s-tag s-tag__moderator fw-normal fs-body1">已删除</span>
-                {{/if}}
-                {{#if (str-cmp creation.status -2 "lte") }}
-                  <span class="ml8 s-tag s-tag__moderator fw-normal fs-body1">已拒绝</span>
-                {{/if}}
-                {{#if (str-cmp creation.status -1) }}
-                  <span class="ml8 s-tag s-tag__moderator fw-normal fs-body1">草稿</span>
-                {{/if}}
-                {{#if (str-cmp creation.status 0) }}
-                  <span class="ml8 s-tag s-tag__moderator fw-normal fs-body1">待审核</span>
-                {{/if}}
-                {{#if (str-cmp creation.status 1 "gte") }}
-                  <span class="ml8 s-tag s-tag__moderator fw-normal fs-body1">已审核</span>
-                {{/if}}
-                {{#if (str-cmp creation.status 2 "gte") }}
-                  <span class="ml8 s-tag s-tag__moderator fw-normal fs-body1">已推荐</span>
-                {{/if}}
-                {{#if (str-cmp creation.status 3 "gte") }}
-                  <span class="ml8 s-tag s-tag__moderator fw-normal fs-body1">已群发</span>
-                {{/if}}
-                {{#if (str-cmp creation.status 6) }}
-                  <span class="ml8 s-tag s-tag__moderator fw-normal fs-body1">已管控</span>
-                {{/if}}
-              </h3>
-              <p class="fc-medium mb2">
+              <p class="my4 fc-medium">
                 {{#if creation_item.topics }}
                   {{#each creation_item.topics as |topic|}}
-                    <a class="s-badge s-badge__sm" href="/{{ ../../language }}/topic/{{ topic.slug }}/creations"
+                    <a class="s-badge s-badge__sm mb2" href="/{{ ../../language }}/topic/{{ topic.slug }}/creations"
                       target="_blank">
                       {{ topic.name }}
                     </a>
@@ -69,13 +85,35 @@
                   {{ lang "not-setting" }}
                 {{/if}}
               </p>
-              <p class="fs-medium">
-                <a class="s-link fw-bold" href="/{{ ../language }}/user/{{ creation_item.user.username }}"
-                  target="_blank">
-                  {{ creation_item.user.nickname }}
-                </a>
-                {{ lang "creation-posted" }}
-                {{ creation_item.updatedAtNyrsq }}
+              <p class="d-flex fw-wrap fc-medium">
+                <span class="s-btn-group">
+                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}"
+                    target="_blank">
+                    <strong>{{ creation_item.hits }}</strong>
+                    {{ lang "hits" }}
+                  </a>
+                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}"
+                    target="_blank">
+                    <strong>{{ creation_item.stars }}</strong>
+                    {{ lang "stars" }}
+                  </a>
+                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}"
+                    target="_blank">
+                    <strong>{{ creation_item.insides }}</strong>
+                    {{ lang "insides" }}
+                  </a>
+                </span>
+                <span class="fl-grow1 ta-right pt6 pr6">
+                  <a class="s-link fw-bold" href="/{{ ../language }}/user/{{ creation_item.user.username }}"
+                    target="_blank">
+                    {{ creation_item.user.nickname }}
+                  </a>
+                  {{#if (str-cmp ../language "zh-cn") }}
+                    {{ creation_item.updatedAtYmd8 }}
+                  {{else}}
+                    {{ creation_item.updatedAtYmd }}
+                  {{/if}}
+                </span>
               </p>
             </article>
           {{/each}}

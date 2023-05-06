@@ -20,7 +20,7 @@ user-register = User Register
 user-register-intro = Register RustHub
 
 register-username = Username
-register-username-tip = Characters range: a-z、_-、0-9
+register-username-tip = Username: 5-30 characters, range: a-z、_-、0-9
 register-email = Email
 register-email-tip = Frequently-used email
 register-password = Password
@@ -31,7 +31,7 @@ register-phone = Phone
 register-phone-tip = Frequently-used phone number
 register-public = Public
 register-im = IM tools
-register-im-tip = Whats App, WeChat, QQ, email, phone, etc
+register-im-tip = IM tools you use frequently, such as WhatsApp, Slack, email, phone, etc
 register-website = Website
 register-topics = Advantages, keywords
 register-topics-tip = Separated by space, enter key, or comma

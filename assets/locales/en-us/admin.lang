@@ -1,0 +1,18 @@
+admin-dashboard = Admin Dashboard
+
+admin-creations = Creations Management
+admin-users = Makers Management
+
+admin-creation-batched = Batched
+admin-creation-recommended = Recommended
+admin-creation-approved = Approved
+admin-creation-pending = Pending
+admin-creation-draft = Draft
+admin-creation-rejected = Rejected
+admin-creation-deleted = Deleted
+
+admin-creation-batch = to Batch
+admin-creation-recommend = to Recommend
+admin-creation-approve = to Approve & Publish
+admin-creation-reject = to Reject
+admin-creation-delete = to Delete

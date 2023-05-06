@@ -107,76 +107,85 @@ pub async fn register(mut req: Request<State>) -> tide::Result {
     if req.method().eq(&Method::Post) {
         let register_info: RegisterInfo = req.body_form().await?;
 
-        let build_query = RegisterData::build_query(register_data::Variables {
-            username: register_info.username.clone(),
-            email: register_info.email.clone(),
-            cred: register_info.password,
-            nickname: register_info.nickname.clone(),
-            phone_number: register_info.phone_number,
-            phone_public: register_info.phone_public,
-            im_account: register_info.im_account,
-            im_public: register_info.im_public,
-            website: register_info.website,
-            introduction: register_info.introduction,
-        });
-        let query = json!(build_query);
-
-        let resp_body: GqlResponse<serde_json::Value> =
-            surf::post(&gql_uri().await).body(query).recv_json().await?;
-        let resp_data = resp_body.data;
-
-        if let Some(register_val) = resp_data {
-            let register_result = register_val["userRegister"].clone();
-            let user_id = register_result["id"].as_str().unwrap();
-
-            // create topics
-            let topics_build_query =
-                TopicsNewData::build_query(topics_new_data::Variables {
-                    topic_names: register_info.topic_names,
+        let username_len = register_info.username.len();
+        if username_len >= 5 && username_len <= 30 {
+            let build_query =
+                RegisterData::build_query(register_data::Variables {
+                    username: register_info.username.clone(),
+                    email: register_info.email.clone(),
+                    cred: register_info.password,
+                    nickname: register_info.nickname.clone(),
+                    phone_number: register_info.phone_number,
+                    phone_public: register_info.phone_public,
+                    im_account: register_info.im_account,
+                    im_public: register_info.im_public,
+                    website: register_info.website,
+                    introduction: register_info.introduction,
                 });
-            let topics_query = json!(topics_build_query);
+            let query = json!(build_query);
 
-            let topics_resp_body: GqlResponse<serde_json::Value> =
-                surf::post(&gql_uri().await)
-                    .body(topics_query)
-                    .recv_json()
-                    .await?;
-            let topics_resp_data = topics_resp_body.data;
+            let resp_body: GqlResponse<serde_json::Value> =
+                surf::post(&gql_uri().await).body(query).recv_json().await?;
+            let resp_data = resp_body.data;
 
-            if let Some(topics_info) = topics_resp_data {
-                let topic_ids = topics_info["topicsNew"].as_array().unwrap();
-                for topic_id in topic_ids {
-                    let topic_id = topic_id["id"].as_str().unwrap();
-                    let topic_user_build_query = TopicUserNewData::build_query(
-                        topic_user_new_data::Variables {
-                            user_id: user_id.to_string(),
-                            topic_id: topic_id.to_string(),
-                        },
-                    );
-                    let topic_user_query = json!(topic_user_build_query);
-                    let _topic_user_resp_body: GqlResponse<serde_json::Value> =
-                        surf::post(&gql_uri().await)
+            if let Some(register_val) = resp_data {
+                let register_result = register_val["userRegister"].clone();
+                let user_id = register_result["id"].as_str().unwrap();
+
+                // create topics
+                let topics_build_query =
+                    TopicsNewData::build_query(topics_new_data::Variables {
+                        topic_names: register_info.topic_names,
+                    });
+                let topics_query = json!(topics_build_query);
+
+                let topics_resp_body: GqlResponse<serde_json::Value> =
+                    surf::post(&gql_uri().await)
+                        .body(topics_query)
+                        .recv_json()
+                        .await?;
+                let topics_resp_data = topics_resp_body.data;
+
+                if let Some(topics_info) = topics_resp_data {
+                    let topic_ids =
+                        topics_info["topicsNew"].as_array().unwrap();
+                    for topic_id in topic_ids {
+                        let topic_id = topic_id["id"].as_str().unwrap();
+                        let topic_user_build_query =
+                            TopicUserNewData::build_query(
+                                topic_user_new_data::Variables {
+                                    user_id: user_id.to_string(),
+                                    topic_id: topic_id.to_string(),
+                                },
+                            );
+                        let topic_user_query = json!(topic_user_build_query);
+                        let _topic_user_resp_body: GqlResponse<
+                            serde_json::Value,
+                        > = surf::post(&gql_uri().await)
                             .body(topic_user_query)
                             .recv_json()
                             .await?;
+                    }
                 }
+
+                send_email(
+                    language,
+                    user_id.to_string(),
+                    register_info.username,
+                    register_info.nickname,
+                    register_info.email,
+                )
+                .await;
+
+                data.insert("register_result", register_result);
+            } else {
+                data.insert(
+                    "register_failed",
+                    json!(resp_body.errors.unwrap()[0].message),
+                );
             }
-
-            send_email(
-                language,
-                user_id.to_string(),
-                register_info.username,
-                register_info.nickname,
-                register_info.email,
-            )
-            .await;
-
-            data.insert("register_result", register_result);
         } else {
-            data.insert(
-                "register_failed",
-                json!(resp_body.errors.unwrap()[0].message),
-            );
+            data.insert("register_failed", json!("register-username-tip"));
         }
     }
 

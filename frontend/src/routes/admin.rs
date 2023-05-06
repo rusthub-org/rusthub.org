@@ -18,6 +18,8 @@ use crate::models::{
 };
 
 pub async fn admin_index(req: Request<State>) -> tide::Result {
+    let language = String::from(req.param("language")?);
+
     let sign_status = sign_status(&req).await;
     if sign_status.sign_in {
         let mut admin_index_tpl: Hbs = Hbs::new("admin/admin-index").await;
@@ -33,7 +35,7 @@ pub async fn admin_index(req: Request<State>) -> tide::Result {
         admin_index_tpl.reg_script_values().await.reg_script_lang().await;
 
         let mut data: BTreeMap<&str, serde_json::Value> = BTreeMap::new();
-        data.insert("language", json!("zh-cn"));
+        data.insert("language", json!(language));
         data.insert("nav-admin-selected", json!("is-selected"));
         insert_user_by_username(sign_status.username, &mut data).await;
 
@@ -46,6 +48,8 @@ pub async fn admin_index(req: Request<State>) -> tide::Result {
 }
 
 pub async fn creations_admin(req: Request<State>) -> tide::Result {
+    let language = String::from(req.param("language")?);
+
     let sign_status = sign_status(&req).await;
     if sign_status.sign_in {
         let mut admin_creations_tpl: Hbs =
@@ -64,7 +68,7 @@ pub async fn creations_admin(req: Request<State>) -> tide::Result {
         admin_creations_tpl.reg_script_values().await.reg_script_lang().await;
 
         let mut data: BTreeMap<&str, serde_json::Value> = BTreeMap::new();
-        data.insert("language", json!("zh-cn"));
+        data.insert("language", json!(language));
         data.insert("nav-admin-selected", json!("is-selected"));
         insert_user_by_username(sign_status.username, &mut data).await;
 
@@ -98,6 +102,8 @@ pub async fn creations_admin(req: Request<State>) -> tide::Result {
 }
 
 pub async fn creation_admin(req: Request<State>) -> tide::Result {
+    let language = String::from(req.param("language")?);
+
     let sign_status = sign_status(&req).await;
     if sign_status.sign_in {
         let mut creation_index_tpl: Hbs =
@@ -120,7 +126,7 @@ pub async fn creation_admin(req: Request<State>) -> tide::Result {
             .await;
 
         let mut data: BTreeMap<&str, serde_json::Value> = BTreeMap::new();
-        data.insert("language", json!("zh-cn"));
+        data.insert("language", json!(language));
         data.insert("nav-admin-selected", json!("is-selected"));
         insert_user_by_username(sign_status.username, &mut data).await;
 
@@ -131,7 +137,7 @@ pub async fn creation_admin(req: Request<State>) -> tide::Result {
                 creation_update_one_field_by_id_data::Variables {
                     creation_id: creation_id.to_string(),
                     field_name: String::from("hits"),
-                    field_val: String::from("3"),
+                    field_val: String::from("1"),
                 },
             );
         let creation_update_hits_query =
@@ -166,7 +172,11 @@ pub async fn creation_admin(req: Request<State>) -> tide::Result {
     }
 }
 
-pub async fn creation_update_one_field(req: Request<State>) -> tide::Result {
+pub async fn admin_creation_update_one_field(
+    req: Request<State>,
+) -> tide::Result {
+    let language = String::from(req.param("language")?);
+
     let sign_status = sign_status(&req).await;
     if sign_status.sign_in {
         let creation_id = req.param("creation_id")?;
@@ -189,8 +199,11 @@ pub async fn creation_update_one_field(req: Request<State>) -> tide::Result {
                 .recv_json()
                 .await?;
 
-        let resp: Response =
-            Redirect::new(format!("/admin/creation/{}", creation_id)).into();
+        let resp: Response = Redirect::new(format!(
+            "/{}/admin/creation/{}",
+            language, creation_id
+        ))
+        .into();
 
         Ok(resp.into())
     } else {

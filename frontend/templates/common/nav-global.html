@@ -10,7 +10,7 @@
 </a>
 
 {{#if (str-cmp user.status 10 "gte") }}
-    <a class="s-navigation--item {{ nav-admin-selected }}" href="/admin">
-        管理后台
+    <a class="s-navigation--item {{ nav-admin-selected }}" href="/{{ language }}/admin">
+        {{ lang "nav-admin" }}
     </a>
 {{/if}}

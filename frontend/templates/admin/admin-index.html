@@ -2,7 +2,13 @@
 <html lang="{{ language }}">
 
     <head>
-        <title>后台管理 - RustHub | 想象、编程、分享</title>
+        <title>
+            {{ lang "admin-dashboard" }} - {{ lang "site-name" }} | {{ lang "site-slogan" }}
+        </title>
+
+        <meta name="keywords" content='{{ lang "admin-dashboard" }},{{ lang "site-name" }},{{ lang "site-slogan" }}'>
+        <meta name="description"
+            content='{{ lang "admin-dashboard" }},{{ lang "site-name" }},{{ lang "site-slogan" }},{{ lang "site-intro" }}'>
 
         {{> head }}
     </head>
@@ -12,15 +18,19 @@
 
         <main class="ps-relative t64">
             {{!-- google ad 内嵌，自适应 --}}
-            <ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article"
+            {{!-- <ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article"
                 data-ad-format="fluid" data-ad-client="ca-pub-2498669832870483" data-ad-slot="1938093545"></ins>
             <script>
                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+            </script> --}}
 
             <div class="d-flex fw-wrap mt16 mb96 mx24 sm:ml4 sm:mr4">
-                <a class="s-card m16" href="/admin/creations">项目审核</a>
-                <a class="s-card m16" href="/admin/creations">人员管理</a>
+                <a class="s-card m16" href="/{{ language }}/admin/creations" target="_blank">
+                    {{ lang "admin-creations" }}
+                </a>
+                <a class="s-card m16" href="/{{ language }}/admin/users" target="_blank">
+                    {{ lang "admin-users" }}
+                </a>
             </div>
 
         </main>

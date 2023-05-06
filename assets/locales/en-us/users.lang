@@ -1,11 +1,11 @@
-users-teams = Authors & Teams
+users-teams = Makers & Teams
 my-profile = My Profile
 
-registration-time = Registration time: 
+users-list-tip = Only activated accounts are listed. If there is any problem, please contact ask@rusthub.org.
 
 user-intro = User Introduction
 user-statistics = User Statistics
-
+user-registration-time = Registration time: 
 user-website = Website: 
 user-phone = Phone number: 
 user-im = IM tools: 
@@ -30,5 +30,3 @@ user-re-activate-result = <span class="fw-bold fc-blue-600">{ $nickname }</span>
     Please log into your mailbox and check the activation email of RustHub, then activate your account.
 user-activate-problem = If you have any problem, please
     <a href="mailto:ask@rusthub.org">contact the service assistant (ask@rusthub.org)</a>
-
-users-list-tip = Only activated accounts are listed. If there is any problem, please contact ask@rusthub.org.
