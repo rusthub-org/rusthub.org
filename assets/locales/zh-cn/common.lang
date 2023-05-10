@@ -2,16 +2,22 @@ site-name = RustHub
 site-slogan = 创意 => 作品
 site-intro = 昨日生锈创意，今天闪亮作品！
 
-nav-creations = 探索作品
-nav-users = 创客团队
-nav-statistics = 数据统计
-nav-admin = 管理控制台
-nav-g = 全局导航
-
 switch-theme = 切换色彩模式
 random = 逛
 random-creation = 试试手气
 shared-aphorism = 分享格言：
+
+nav-creations = 探索作品
+nav-creations-tip = 探索闪亮作品，重生生锈创意
+nav-users = 创客团队
+nav-users-tip = 创客和其团队信息
+nav-statistics = 数据统计
+nav-statistics-tip = Crates、框架、数据库、技术趋势等
+nav-admin = 管理控制台
+nav-g = 全局导航
+
+creation-new = 提交你的作品
+creation-new-tip = 源码、截图、资源文件等
 
 hits = 点击
 insides = 进入

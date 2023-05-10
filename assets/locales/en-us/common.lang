@@ -2,16 +2,22 @@ site-name = RustHub
 site-slogan = Ideas => Creations
 site-intro = Rust ideas yesterday, shining creations today!
 
-nav-creations = Explore Creations
-nav-users = Makers & Teams
-nav-statistics = Statistics
-nav-admin = Admin Dashboard
-nav-g = global navigation
-
 switch-theme = Switch Theme
 random = R
 random-creation = Random Creation
 shared-aphorism = shared an aphorism: 
+
+nav-creations = Explore Creations
+nav-creations-tip = Explore shining creations, revive rust ideas
+nav-users = Makers & Teams
+nav-users-tip = Information about makers and their teams
+nav-statistics = Statistics
+nav-statistics-tip = Crates, frameworks, databases, technology trends, etc
+nav-admin = Admin Dashboard
+nav-g = global navigation
+
+creation-new = Submit Your Creation
+creation-new-tip = Source code, screenshots, resource files, etc
 
 hits = Hits
 insides = Insides
