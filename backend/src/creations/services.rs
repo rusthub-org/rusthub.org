@@ -45,8 +45,7 @@ pub async fn creation_new(
     let exist_document = coll.find_one(filter_doc, None).await?;
 
     if exist_document.is_none() {
-        let slug = slugify(&creation_new.subject).await;
-        creation_new.slug = format!("{}-{}", slug, now.timestamp_millis());
+        creation_new.slug = slugify(&creation_new.subject).await;
 
         let mut new_document = to_document(&creation_new)?;
         new_document.insert("created_at", now);

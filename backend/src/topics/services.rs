@@ -3,7 +3,6 @@ use mongodb::{
     Database,
     bson::{
         oid::ObjectId, Document, doc, from_document, to_document, from_bson,
-        DateTime,
     },
 };
 use async_graphql::Error;
@@ -226,9 +225,7 @@ async fn topic_new(db: &Database, mut topic_new: TopicNew) -> GqlResult<Topic> {
 
             let topic_id;
             if exist_document.is_none() {
-                let slug = slugify(&topic_new.name).await;
-                topic_new.slug =
-                    format!("{}-{}", slug, DateTime::now().timestamp_millis());
+                topic_new.slug = slugify(&topic_new.name).await;
 
                 let new_document = to_document(&topic_new)?;
                 let topic_res = coll
