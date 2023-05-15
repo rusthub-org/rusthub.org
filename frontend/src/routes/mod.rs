@@ -3,7 +3,6 @@ use tide::{self, Server};
 pub mod home;
 pub mod users;
 pub mod creations;
-pub mod topics;
 pub mod admin;
 
 use crate::State;
@@ -37,7 +36,7 @@ pub async fn push_res(app: &mut Server<State>) {
     // users.at("/:filter_str").get(super::routes::users::users_filter);
 
     let mut user = home.at("/user");
-    user.at("/:user_id/activate")
+    user.at("/:author_username/activate")
         .get(super::routes::users::user_activate)
         .post(super::routes::users::user_activate);
     user.at("/:author_username").get(super::routes::users::user_index);
@@ -56,7 +55,12 @@ pub async fn push_res(app: &mut Server<State>) {
         .at("/new")
         .get(super::routes::creations::creation_new)
         .post(super::routes::creations::creation_new);
-    creation.at("/:creation_id").get(super::routes::creations::creation_index);
+    creation
+        .at("/:creation_slug")
+        .get(super::routes::creations::creation_index);
+    creation
+        .at("/:creation_slug/:field_name/:field_val")
+        .get(super::routes::creations::creation_update_one_field);
     creation
         .at("/file/new/:file_name/:file_kind")
         .put(super::routes::creations::file_new);
@@ -71,9 +75,9 @@ pub async fn push_res(app: &mut Server<State>) {
     admin.at("/").get(super::routes::admin::admin_index);
     admin.at("/creations").get(super::routes::admin::creations_admin);
     admin
-        .at("/creation/:creation_id")
+        .at("/creation/:creation_slug")
         .get(super::routes::admin::creation_admin);
     admin
-        .at("/creation/:creation_id/:field_name/:field_val")
+        .at("/creation/:creation_slug/:field_name/:field_val")
         .get(super::routes::admin::admin_creation_update_one_field);
 }

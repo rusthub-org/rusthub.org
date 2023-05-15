@@ -11,13 +11,14 @@ use async_graphql::Error;
 use chrono::Duration;
 
 use crate::util::{
-    constant::GqlResult,
+    {constant::GqlResult, common::slugify},
     common::{bdt_to_ymdhmsz, bdt_to_ymdhmsz_8},
     pagination::{
         CreationsResult, PageInfo, ResCount, count_pages_and_total,
         calculate_current_filter_skip, find_options,
     },
 };
+use crate::dbs::info::*;
 
 use crate::users;
 use crate::{topics, topics::models::TopicCreation};
@@ -30,9 +31,9 @@ const CREATIONS_STUFF: &str = "creations";
 // create new creation
 pub async fn creation_new(
     db: &Database,
-    creation_new: CreationNew,
+    mut creation_new: CreationNew,
 ) -> GqlResult<Creation> {
-    let coll = db.collection::<Document>("creations");
+    let coll = db.collection::<Document>(COLL_CREATIONS);
 
     let now = DateTime::now();
     let now2ago = now.to_chrono() + Duration::days(-2);
@@ -44,12 +45,15 @@ pub async fn creation_new(
     let exist_document = coll.find_one(filter_doc, None).await?;
 
     if exist_document.is_none() {
+        let slug = slugify(&creation_new.subject).await;
+        creation_new.slug = format!("{}-{}", slug, now.timestamp_millis());
+
         let mut new_document = to_document(&creation_new)?;
         new_document.insert("created_at", now);
         new_document.insert("updated_at", now);
 
         let creation_res =
-            coll.insert_one(new_document, None).await.expect("写入未成功");
+            coll.insert_one(new_document, None).await.expect(ERR_INSERT_PANIC);
         let creation_id = from_bson(creation_res.inserted_id)?;
 
         creation_by_id(db, creation_id).await
@@ -65,31 +69,47 @@ pub async fn creation_new(
     }
 }
 
-pub async fn creation_by_id(
+pub async fn creation_by_slug(
     db: &Database,
-    creation_id: ObjectId,
+    creation_slug: String,
 ) -> GqlResult<Creation> {
-    let coll = db.collection::<Document>("creations");
+    let coll = db.collection::<Document>(COLL_CREATIONS);
 
     let creation_document = coll
-        .find_one(doc! {"_id": creation_id}, None)
+        .find_one(doc! {"slug": creation_slug}, None)
         .await
-        .expect("查询未成功")
+        .expect(ERR_FIND_PANIC)
         .unwrap();
 
     let creation: Creation = from_document(creation_document)?;
     Ok(creation)
 }
 
-pub async fn creation_update_one_field_by_id(
+async fn creation_by_id(
     db: &Database,
     creation_id: ObjectId,
+) -> GqlResult<Creation> {
+    let coll = db.collection::<Document>(COLL_CREATIONS);
+
+    let creation_document = coll
+        .find_one(doc! {"_id": creation_id}, None)
+        .await
+        .expect(ERR_FIND_PANIC)
+        .unwrap();
+
+    let creation: Creation = from_document(creation_document)?;
+    Ok(creation)
+}
+
+pub async fn creation_update_one_field_by_slug(
+    db: &Database,
+    creation_slug: String,
     field_name: String,
     field_val: String,
 ) -> GqlResult<Creation> {
-    let coll = db.collection::<Document>("creations");
+    let coll = db.collection::<Document>(COLL_CREATIONS);
 
-    let query_doc = doc! {"_id": creation_id};
+    let query_doc = doc! {"slug": creation_slug.to_owned()};
     let update_doc = match field_name.as_str() {
         "status" => {
             doc! {"$set": {
@@ -97,7 +117,7 @@ pub async fn creation_update_one_field_by_id(
                 "updated_at": DateTime::now()
             }}
         }
-        "hits" => {
+        "hits" | "insides" | "stars" => {
             doc! {"$inc": {field_name: field_val.parse::<i64>()?}}
         }
         _ => doc! {},
@@ -105,12 +125,12 @@ pub async fn creation_update_one_field_by_id(
 
     coll.update_one(query_doc, update_doc, None).await?;
 
-    creation_by_id(db, creation_id).await
+    creation_by_slug(db, creation_slug).await
 }
 
 // get random creation
 pub async fn creation_random_id(db: &Database) -> GqlResult<ObjectId> {
-    let coll = db.collection::<Document>("creations");
+    let coll = db.collection::<Document>(COLL_CREATIONS);
 
     let now = DateTime::now();
     let days_before = now.to_chrono() + Duration::days(-7);
@@ -128,7 +148,7 @@ pub async fn creation_random_id(db: &Database) -> GqlResult<ObjectId> {
         let creation: Creation = from_document(document_res?)?;
         Ok(creation._id)
     } else {
-        Err(Error::new("查询未成功"))
+        Err(Error::new(ERR_FIND_PANIC))
     }
 }
 
@@ -139,7 +159,7 @@ pub async fn creations(
     last_oid: String,
     status: i8,
 ) -> GqlResult<CreationsResult> {
-    let coll = db.collection::<Document>("creations");
+    let coll = db.collection::<Document>(COLL_CREATIONS);
 
     let mut filter_doc = doc! {};
     filter_status(status, &mut filter_doc).await;
@@ -211,7 +231,7 @@ pub async fn creations_in_position(
     position: String,
     limit: i64,
 ) -> GqlResult<Vec<Creation>> {
-    let coll = db.collection::<Document>("creations");
+    let coll = db.collection::<Document>(COLL_CREATIONS);
 
     let mut filter_doc = doc! {};
     if "".ne(username.trim()) && "-".ne(username.trim()) {
@@ -247,72 +267,6 @@ pub async fn creations_in_position(
     Ok(creations)
 }
 
-pub async fn creations_by_user_id(
-    db: &Database,
-    user_id: ObjectId,
-    from_page: u32,
-    first_oid: String,
-    last_oid: String,
-    status: i8,
-) -> GqlResult<CreationsResult> {
-    let coll = db.collection::<Document>("creations");
-
-    let mut filter_doc = doc! {"user_id": user_id};
-    filter_status(status, &mut filter_doc).await;
-
-    let (pages_count, total_count) =
-        count_pages_and_total(&coll, Some(filter_doc.clone()), None).await;
-    let (current_page, skip_x) = calculate_current_filter_skip(
-        from_page,
-        first_oid,
-        last_oid,
-        &mut filter_doc,
-    )
-    .await;
-
-    let sort_doc = doc! {"_id": -1};
-    let find_options = find_options(Some(sort_doc), skip_x).await;
-
-    let mut cursor = coll.find(filter_doc, find_options).await?;
-
-    let mut creations: Vec<Creation> = vec![];
-    while let Some(result) = cursor.next().await {
-        match result {
-            Ok(document) => {
-                let creation = from_document(document)?;
-                creations.push(creation);
-            }
-            Err(error) => {
-                println!("\n\n\n{}\n\n\n", error);
-            }
-        }
-    }
-
-    let creations_result = CreationsResult {
-        page_info: PageInfo {
-            current_stuff: Some(String::from(CREATIONS_STUFF)),
-            current_page: Some(current_page),
-            first_cursor: match creations.first() {
-                Some(creation) => Some(creation._id),
-                _ => None,
-            },
-            last_cursor: match creations.last() {
-                Some(creation) => Some(creation._id),
-                _ => None,
-            },
-            has_previous_page: current_page > 1,
-            has_next_page: current_page < pages_count,
-        },
-        res_count: ResCount {
-            pages_count: Some(pages_count),
-            total_count: Some(total_count),
-        },
-        current_items: creations,
-    };
-
-    Ok(creations_result)
-}
-
 pub async fn creations_by_username(
     db: &Database,
     username: String,
@@ -326,27 +280,17 @@ pub async fn creations_by_username(
         .await
 }
 
-// Get all creations by topic_id
-pub async fn creations_by_topic_id(
+pub async fn creations_by_user_id(
     db: &Database,
-    topic_id: ObjectId,
+    user_id: ObjectId,
     from_page: u32,
     first_oid: String,
     last_oid: String,
     status: i8,
 ) -> GqlResult<CreationsResult> {
-    let topics_creations = topics_creations_by_topic_id(db, topic_id).await;
+    let coll = db.collection::<Document>(COLL_CREATIONS);
 
-    let mut creation_ids = vec![];
-    for topic_creation in topics_creations {
-        creation_ids.push(topic_creation.creation_id);
-    }
-    creation_ids.sort();
-    creation_ids.dedup();
-
-    let coll = db.collection::<Document>("creations");
-
-    let mut filter_doc = doc! {"_id": {"$in": creation_ids}};
+    let mut filter_doc = doc! {"user_id": user_id};
     filter_status(status, &mut filter_doc).await;
 
     let (pages_count, total_count) =
@@ -416,12 +360,88 @@ pub async fn creations_by_topic_slug(
         .await
 }
 
+// Get all creations by topic_id
+pub async fn creations_by_topic_id(
+    db: &Database,
+    topic_id: ObjectId,
+    from_page: u32,
+    first_oid: String,
+    last_oid: String,
+    status: i8,
+) -> GqlResult<CreationsResult> {
+    let topics_creations = topics_creations_by_topic_id(db, topic_id).await;
+
+    let mut creation_ids = vec![];
+    for topic_creation in topics_creations {
+        creation_ids.push(topic_creation.creation_id);
+    }
+    creation_ids.sort();
+    creation_ids.dedup();
+
+    let coll = db.collection::<Document>(COLL_CREATIONS);
+
+    let mut filter_doc = doc! {"_id": {"$in": creation_ids}};
+    filter_status(status, &mut filter_doc).await;
+
+    let (pages_count, total_count) =
+        count_pages_and_total(&coll, Some(filter_doc.clone()), None).await;
+    let (current_page, skip_x) = calculate_current_filter_skip(
+        from_page,
+        first_oid,
+        last_oid,
+        &mut filter_doc,
+    )
+    .await;
+
+    let sort_doc = doc! {"_id": -1};
+    let find_options = find_options(Some(sort_doc), skip_x).await;
+
+    let mut cursor = coll.find(filter_doc, find_options).await?;
+
+    let mut creations: Vec<Creation> = vec![];
+    while let Some(result) = cursor.next().await {
+        match result {
+            Ok(document) => {
+                let creation = from_document(document)?;
+                creations.push(creation);
+            }
+            Err(error) => {
+                println!("\n\n\n{}\n\n\n", error);
+            }
+        }
+    }
+
+    let creations_result = CreationsResult {
+        page_info: PageInfo {
+            current_stuff: Some(String::from(CREATIONS_STUFF)),
+            current_page: Some(current_page),
+            first_cursor: match creations.first() {
+                Some(creation) => Some(creation._id),
+                _ => None,
+            },
+            last_cursor: match creations.last() {
+                Some(creation) => Some(creation._id),
+                _ => None,
+            },
+            has_previous_page: current_page > 1,
+            has_next_page: current_page < pages_count,
+        },
+        res_count: ResCount {
+            pages_count: Some(pages_count),
+            total_count: Some(total_count),
+        },
+        current_items: creations,
+    };
+
+    Ok(creations_result)
+}
+
 // get all TopicCreation list by topic_id
 async fn topics_creations_by_topic_id(
     db: &Database,
     topic_id: ObjectId,
 ) -> Vec<TopicCreation> {
-    let coll_topics_creations = db.collection::<Document>("topics_relevant");
+    let coll_topics_creations = db.collection::<Document>(COLL_TOPICS_RELEVANT);
     let mut cursor_topics_creations = coll_topics_creations
         .find(
             doc! {
@@ -459,7 +479,7 @@ pub async fn creations_by_filter(
     last_oid: String,
     status: i8,
 ) -> GqlResult<CreationsResult> {
-    let coll = db.collection::<Document>("creations");
+    let coll = db.collection::<Document>(COLL_CREATIONS);
 
     let mut filter_doc = doc! {};
     filter_status(status, &mut filter_doc).await;
@@ -529,25 +549,25 @@ pub async fn creations_by_filter(
 
 // Create new file
 pub async fn file_new(db: &Database, file_new: FileNew) -> GqlResult<File> {
-    let coll = db.collection::<Document>("files");
+    let coll = db.collection::<Document>(COLL_FILES);
 
     let new_document = to_document(&file_new)?;
 
     let file_res =
-        coll.insert_one(new_document, None).await.expect("写入未成功");
+        coll.insert_one(new_document, None).await.expect(ERR_INSERT_PANIC);
     let file_id = from_bson(file_res.inserted_id)?;
 
     file_by_id(db, file_id).await
 }
 
 // get file by id
-pub async fn file_by_id(db: &Database, id: ObjectId) -> GqlResult<File> {
-    let coll = db.collection::<Document>("files");
+async fn file_by_id(db: &Database, id: ObjectId) -> GqlResult<File> {
+    let coll = db.collection::<Document>(COLL_FILES);
 
     let file_document = coll
         .find_one(doc! {"_id": id}, None)
         .await
-        .expect("查询未成功")
+        .expect(ERR_FIND_PANIC)
         .unwrap();
 
     let file: File = from_document(file_document)?;
@@ -559,7 +579,7 @@ pub async fn creation_file_new(
     db: &Database,
     creation_file_new: CreationFileNew,
 ) -> GqlResult<CreationFile> {
-    let coll = db.collection::<Document>("creations_files");
+    let coll = db.collection::<Document>(COLL_CREATIONS_FILES);
 
     let exist_document = coll
         .find_one(
@@ -573,12 +593,12 @@ pub async fn creation_file_new(
     if exist_document.is_none() {
         let new_document = to_document(&creation_file_new)?;
         let creation_file_res =
-            coll.insert_one(new_document, None).await.expect("写入未成功");
+            coll.insert_one(new_document, None).await.expect(ERR_INSERT_PANIC);
         let creation_file_id = from_bson(creation_file_res.inserted_id)?;
 
         creation_file_by_id(db, creation_file_id).await
     } else {
-        Err(Error::new("记录已存在"))
+        Err(Error::new(ERR_RECORD_EXIST))
     }
 }
 
@@ -587,12 +607,12 @@ async fn creation_file_by_id(
     db: &Database,
     id: ObjectId,
 ) -> GqlResult<CreationFile> {
-    let coll = db.collection::<Document>("creations_files");
+    let coll = db.collection::<Document>(COLL_CREATIONS_FILES);
 
     let creation_file_document = coll
         .find_one(doc! {"_id": id}, None)
         .await
-        .expect("查询未成功")
+        .expect(ERR_FIND_PANIC)
         .unwrap();
 
     let creation_file: CreationFile = from_document(creation_file_document)?;
@@ -618,7 +638,7 @@ pub async fn file_by_kind_creation_id(
         "status": file_status as i32
     };
 
-    let coll = db.collection::<Document>("files");
+    let coll = db.collection::<Document>(COLL_FILES);
     let file_document = coll.find_one(filter_doc, None).await?;
 
     let file: File = if let Some(file_document) = file_document {
@@ -657,7 +677,7 @@ pub async fn files_by_kind_creation_id(
         "status": file_status as i32
     };
 
-    let coll = db.collection::<Document>("files");
+    let coll = db.collection::<Document>(COLL_FILES);
     let mut cursor = coll.find(filter_doc, None).await?;
 
     let mut files: Vec<File> = vec![];
@@ -681,7 +701,7 @@ async fn creations_files_by_creation_id(
     db: &Database,
     creation_id: ObjectId,
 ) -> Vec<CreationFile> {
-    let coll_creations_files = db.collection::<Document>("creations_files");
+    let coll_creations_files = db.collection::<Document>(COLL_CREATIONS_FILES);
     let mut cursor_creations_files = coll_creations_files
         .find(doc! {"creation_id": creation_id}, None)
         .await

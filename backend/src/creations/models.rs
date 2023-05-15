@@ -17,8 +17,8 @@ use crate::{
 pub struct Creation {
     pub _id: ObjectId,
     pub user_id: ObjectId,
-
     pub subject: String,
+    pub slug: String,
     pub content: String,
     pub website: String,
     pub source_url: String,
@@ -125,6 +125,8 @@ impl Creation {
 pub struct CreationNew {
     pub user_id: ObjectId,
     pub subject: String,
+    #[graphql(skip)]
+    pub slug: String,
     pub content: String,
     pub website: String,
     pub source_url: String,

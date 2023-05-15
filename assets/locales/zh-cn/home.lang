@@ -58,7 +58,7 @@ email-body = 你好，{ $nickname }（{ $username }）！
     <br><br>
     此邮件为 RustHub.org 发送，是你的账户激活邮件。
     <br><br>
-    请点击链接： https://{ $domain }/{ $language }/user/{ $user_id }/activate 激活你的账户。
+    请点击链接： https://{ $domain }/{ $language }/user/{ $username }/activate 激活你的账户。
     <br><br>
     如果不能在邮件中点击链接，请复制链接地址到浏览器地址栏，然后进行访问。
     <br><br>

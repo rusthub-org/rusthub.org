@@ -1,22 +1,17 @@
 // Generate friendly slug from the given string
 pub async fn slugify(str: &str) -> String {
     use deunicode::deunicode_with_tofu;
+    use regex::Regex;
 
-    let slug = deunicode_with_tofu(str.trim(), "-")
-        .to_lowercase()
-        .replace(" ", "-")
-        .replace("[", "-")
-        .replace("]", "-")
-        .replace("\"", "-")
-        .replace("/", "-")
-        .replace("?", "-")
-        .replace("&", "-")
-        .replace(".", "-")
-        .replace("#", "++++")
-        .replace("---", "-")
-        .replace("--", "-");
+    let slug = deunicode_with_tofu(str.trim(), "-").to_lowercase();
 
-    slug
+    let re = Regex::new(r"[^a-z-0-9]").unwrap();
+    let slug = re.replace_all(&slug, "-");
+
+    let re = Regex::new(r"-{1,}").unwrap();
+    let slug = re.replace_all(&slug, "-");
+
+    slug.to_string()
 }
 
 // bson::DateTime -> Y-M-D

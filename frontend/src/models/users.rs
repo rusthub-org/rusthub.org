@@ -20,13 +20,6 @@ type ObjectId = String;
     schema_path = "../assets/graphql/schema.graphql",
     query_path = "../assets/graphql/users.graphql"
 )]
-pub struct UserByIdData;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "../assets/graphql/schema.graphql",
-    query_path = "../assets/graphql/users.graphql"
-)]
 pub struct UserByUsernameData;
 
 #[derive(GraphQLQuery)]
@@ -34,21 +27,7 @@ pub struct UserByUsernameData;
     schema_path = "../assets/graphql/schema.graphql",
     query_path = "../assets/graphql/users.graphql"
 )]
-pub struct UserByUsernameDetailData;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "../assets/graphql/schema.graphql",
-    query_path = "../assets/graphql/users.graphql"
-)]
 pub struct UsersData;
-
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "../assets/graphql/schema.graphql",
-    query_path = "../assets/graphql/users.graphql"
-)]
-pub struct UserUpdateOneFieldByIdData;
 
 #[derive(GraphQLQuery)]
 #[graphql(

@@ -5,7 +5,7 @@ use serde_json::json;
 
 use crate::State;
 use crate::util::{
-    common::{gql_uri, sign_status},
+    common::{gql_uri, sign_status, get_user_by_username},
     tpl::{Hbs, insert_user_by_username},
 };
 
@@ -13,7 +13,8 @@ use crate::models::{
     Page,
     creations::{
         CreationsData, creations_data, CreationData, creation_data,
-        CreationUpdateOneFieldByIdData, creation_update_one_field_by_id_data,
+        CreationUpdateOneFieldBySlugData,
+        creation_update_one_field_by_slug_data,
     },
 };
 
@@ -41,7 +42,8 @@ pub async fn admin_index(req: Request<State>) -> tide::Result {
 
         admin_index_tpl.render(&data).await
     } else {
-        let resp: Response = Redirect::new("/zh-cn/sign-in").into();
+        let resp: Response =
+            Redirect::new(format!("/{}/sign-in", language)).into();
 
         Ok(resp.into())
     }
@@ -88,14 +90,15 @@ pub async fn creations_admin(req: Request<State>) -> tide::Result {
                 .recv_json()
                 .await
                 .unwrap();
-        let creations_resp_data = creations_resp_body.data.expect("无响应数据");
+        let creations_resp_data = creations_resp_body.data.unwrap();
 
         let creations = creations_resp_data["creations"].clone();
         data.insert("pagination", creations);
 
         admin_creations_tpl.render(&data).await
     } else {
-        let resp: Response = Redirect::new("/zh-cn/sign-in").into();
+        let resp: Response =
+            Redirect::new(format!("/{}/sign-in", language)).into();
 
         Ok(resp.into())
     }
@@ -130,12 +133,12 @@ pub async fn creation_admin(req: Request<State>) -> tide::Result {
         data.insert("nav-admin-selected", json!("is-selected"));
         insert_user_by_username(sign_status.username, &mut data).await;
 
-        let creation_id = req.param("creation_id")?;
+        let creation_slug = req.param("creation_slug")?;
 
         let creation_update_hits_build_query =
-            CreationUpdateOneFieldByIdData::build_query(
-                creation_update_one_field_by_id_data::Variables {
-                    creation_id: creation_id.to_string(),
+            CreationUpdateOneFieldBySlugData::build_query(
+                creation_update_one_field_by_slug_data::Variables {
+                    creation_slug: creation_slug.to_string(),
                     field_name: String::from("hits"),
                     field_val: String::from("1"),
                 },
@@ -150,7 +153,7 @@ pub async fn creation_admin(req: Request<State>) -> tide::Result {
 
         let creation_build_query =
             CreationData::build_query(creation_data::Variables {
-                creation_id: creation_id.to_string(),
+                creation_slug: creation_slug.to_owned(),
             });
         let creation_query = json!(creation_build_query);
 
@@ -159,14 +162,15 @@ pub async fn creation_admin(req: Request<State>) -> tide::Result {
                 .body(creation_query)
                 .recv_json()
                 .await?;
-        let creation_resp_data = creation_resp_body.data.expect("无响应数据");
+        let creation_resp_data = creation_resp_body.data.unwrap();
 
-        let creation = creation_resp_data["creationById"].clone();
+        let creation = creation_resp_data["creationBySlug"].clone();
         data.insert("creation", creation);
 
         creation_index_tpl.render(&data).await
     } else {
-        let resp: Response = Redirect::new("/zh-cn/sign-in").into();
+        let resp: Response =
+            Redirect::new(format!("/{}/sign-in", language)).into();
 
         Ok(resp.into())
     }
@@ -179,35 +183,50 @@ pub async fn admin_creation_update_one_field(
 
     let sign_status = sign_status(&req).await;
     if sign_status.sign_in {
-        let creation_id = req.param("creation_id")?;
-        let field_name = req.param("field_name")?;
-        let field_val = req.param("field_val")?;
+        let sign_user =
+            get_user_by_username(sign_status.username.to_owned()).await;
+        let sign_user_status = sign_user["status"].as_i64().unwrap();
+        if sign_user_status >= 10 {
+            let creation_slug = req.param("creation_slug")?;
+            let field_name = req.param("field_name")?;
+            let field_val = req.param("field_val")?;
 
-        let creation_update_hits_build_query =
-            CreationUpdateOneFieldByIdData::build_query(
-                creation_update_one_field_by_id_data::Variables {
-                    creation_id: String::from(creation_id),
-                    field_name: String::from(field_name),
-                    field_val: String::from(field_val),
-                },
-            );
-        let creation_update_hits_query =
-            json!(creation_update_hits_build_query);
-        let _creation_update_hits_resp_body: GqlResponse<serde_json::Value> =
-            surf::post(&gql_uri().await)
-                .body(creation_update_hits_query)
+            let creation_update_one_field_build_query =
+                CreationUpdateOneFieldBySlugData::build_query(
+                    creation_update_one_field_by_slug_data::Variables {
+                        creation_slug: creation_slug.to_owned(),
+                        field_name: String::from(field_name),
+                        field_val: String::from(field_val),
+                    },
+                );
+            let creation_update_one_field_query =
+                json!(creation_update_one_field_build_query);
+            let _creation_update_one_field_resp_body: GqlResponse<
+                serde_json::Value,
+            > = surf::post(&gql_uri().await)
+                .body(creation_update_one_field_query)
                 .recv_json()
                 .await?;
 
-        let resp: Response = Redirect::new(format!(
-            "/{}/admin/creation/{}",
-            language, creation_id
-        ))
-        .into();
+            let resp: Response = Redirect::new(format!(
+                "/{}/admin/creation/{}",
+                language, creation_slug
+            ))
+            .into();
 
-        Ok(resp.into())
+            Ok(resp.into())
+        } else {
+            let resp: Response = Redirect::new(format!(
+                "/{}/user/{}",
+                language, sign_status.username
+            ))
+            .into();
+
+            Ok(resp.into())
+        }
     } else {
-        let resp: Response = Redirect::new("/zh-cn/sign-in").into();
+        let resp: Response =
+            Redirect::new(format!("/{}/sign-in", language)).into();
 
         Ok(resp.into())
     }

@@ -1,5 +1,4 @@
 use async_graphql::Context;
-use mongodb::bson::oid::ObjectId;
 
 use crate::dbs::mongo::DataSource;
 use crate::util::constant::GqlResult;
@@ -16,10 +15,7 @@ use crate::creations::{
 };
 use crate::topics::{
     self,
-    models::{
-        Topic, TopicNew, TopicUser, TopicUserNew, TopicCreation,
-        TopicCreationNew,
-    },
+    models::{Topic, TopicUser, TopicUserNew, TopicCreation, TopicCreationNew},
 };
 
 pub struct MutationRoot;
@@ -59,21 +55,6 @@ impl MutationRoot {
         users::services::user_update_profile(db, user_new, token).await
     }
 
-    // modify user's one field by its id
-    async fn user_update_one_field_by_id(
-        &self,
-        ctx: &Context<'_>,
-        user_id: ObjectId,
-        field_name: String,
-        field_val: String,
-    ) -> GqlResult<User> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        users::services::user_update_one_field_by_id(
-            db, user_id, field_name, field_val,
-        )
-        .await
-    }
-
     // modify user's one field by its username
     async fn user_update_one_field_by_username(
         &self,
@@ -99,52 +80,22 @@ impl MutationRoot {
         creations::services::creation_new(db, creation_new).await
     }
 
-    // modify creation's one field by its id
-    async fn creation_update_one_field_by_id(
+    // modify creation's one field by its slug
+    async fn creation_update_one_field_by_slug(
         &self,
         ctx: &Context<'_>,
-        creation_id: ObjectId,
+        creation_slug: String,
         field_name: String,
         field_val: String,
     ) -> GqlResult<Creation> {
         let db = &ctx.data_unchecked::<DataSource>().db;
-        creations::services::creation_update_one_field_by_id(
+        creations::services::creation_update_one_field_by_slug(
             db,
-            creation_id,
+            creation_slug,
             field_name,
             field_val,
         )
         .await
-    }
-
-    // Add new file
-    async fn file_new(
-        &self,
-        ctx: &Context<'_>,
-        file_new: FileNew,
-    ) -> GqlResult<File> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        creations::services::file_new(db, file_new).await
-    }
-
-    // Add new creation_file
-    async fn creation_file_new(
-        &self,
-        ctx: &Context<'_>,
-        creation_file_new: CreationFileNew,
-    ) -> GqlResult<CreationFile> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        creations::services::creation_file_new(db, creation_file_new).await
-    }
-
-    // Add new topic
-    async fn topic_new(
-        &self,
-        ctx: &Context<'_>,
-        topic_new: TopicNew,
-    ) -> GqlResult<Topic> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        topics::services::topic_new(db, topic_new).await
     }
 
     // Add new topics
@@ -175,6 +126,26 @@ impl MutationRoot {
     ) -> GqlResult<TopicCreation> {
         let db = &ctx.data_unchecked::<DataSource>().db;
         topics::services::topic_creation_new(db, topic_creation_new).await
+    }
+
+    // Add new file
+    async fn file_new(
+        &self,
+        ctx: &Context<'_>,
+        file_new: FileNew,
+    ) -> GqlResult<File> {
+        let db = &ctx.data_unchecked::<DataSource>().db;
+        creations::services::file_new(db, file_new).await
+    }
+
+    // Add new creation_file
+    async fn creation_file_new(
+        &self,
+        ctx: &Context<'_>,
+        creation_file_new: CreationFileNew,
+    ) -> GqlResult<CreationFile> {
+        let db = &ctx.data_unchecked::<DataSource>().db;
+        creations::services::creation_file_new(db, creation_file_new).await
     }
 
     // Add new wish

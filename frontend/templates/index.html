@@ -450,7 +450,7 @@
                 <div class="d-grid grid__3 lg:grid__2 sm:grid__1 g12 w100 wmx100 mx-auto">
                     {{#each recommended_creations as |creation|}}
                         <article class="s-card m8 p8 bs-sm bar-md h:bs-md sm:ai-center bg-silver-lighter">
-                            <a href="/{{ ../language }}/creation/{{ creation.id }}">
+                            <a href="/{{ ../language }}/creation/{{ creation.slug }}">
                                 <img src='/files/creations/{{ cover-img creation.coverImage.location "-thumbnail" }}'>
                                 <h2 class="my4 pl2 fs-title fc-theme-secondary-400 truncate">
                                     {{ creation.subject }}
@@ -472,17 +472,17 @@
                             <p class="d-flex fw-wrap pl2 fc-medium">
                                 <span class="s-btn-group">
                                     <a class="s-btn s-btn__xs s-btn__outlined"
-                                        href="/{{ ../language }}/creation/{{ creation.id }}">
+                                        href="/{{ ../language }}/creation/{{ creation.slug }}">
                                         <strong>{{ creation.hits }}</strong>
                                         {{ lang "hits" }}
                                     </a>
-                                    <a class="s-btn s-btn__xs s-btn__outlined"
-                                        href="/{{ ../language }}/creation/{{ creation.id }}">
+                                    <button class="s-btn s-btn__xs s-btn__outlined"
+                                        onclick="updateCreationOneField(this, '{{ ../language }}', '{{ creation.slug }}', 'stars', 1)">
                                         <strong>{{ creation.stars }}</strong>
                                         {{ lang "stars" }}
-                                    </a>
+                                    </button>
                                     <a class="s-btn s-btn__xs s-btn__outlined"
-                                        href="/{{ ../language }}/creation/{{ creation.id }}">
+                                        href="/{{ ../language }}/creation/{{ creation.slug }}">
                                         <strong>{{ creation.insides }}</strong>
                                         {{ lang "insides" }}
                                     </a>
@@ -524,7 +524,7 @@
                 <div class="d-grid grid__3 lg:grid__2 sm:grid__1 g12 w100 wmx100 mx-auto">
                     {{#each published_creations as |creation|}}
                         <article class="s-card m8 p8 bg-silver-lighter bs-sm bar-md h:bs-md sm:ai-center">
-                            <a href="/{{ ../language }}/creation/{{ creation.id }}">
+                            <a href="/{{ ../language }}/creation/{{ creation.slug }}">
                                 <img src='/files/creations/{{ cover-img creation.coverImage.location "-thumbnail" }}'>
                                 <h2 class="my4 pl2 fs-title fc-theme-secondary-400 truncate">
                                     {{ creation.subject }}
@@ -546,17 +546,17 @@
                             <p class="d-flex fw-wrap pl2 fc-medium">
                                 <span class="s-btn-group">
                                     <a class="s-btn s-btn__xs s-btn__outlined"
-                                        href="/{{ ../language }}/creation/{{ creation.id }}">
+                                        href="/{{ ../language }}/creation/{{ creation.slug }}">
                                         <strong>{{ creation.hits }}</strong>
                                         {{ lang "hits" }}
                                     </a>
-                                    <a class="s-btn s-btn__xs s-btn__outlined"
-                                        href="/{{ ../language }}/creation/{{ creation.id }}">
+                                    <button class="s-btn s-btn__xs s-btn__outlined"
+                                        onclick="updateCreationOneField(this, '{{ ../language }}', '{{ creation.slug }}', 'stars', 1)">
                                         <strong>{{ creation.stars }}</strong>
                                         {{ lang "stars" }}
-                                    </a>
+                                    </button>
                                     <a class="s-btn s-btn__xs s-btn__outlined"
-                                        href="/{{ ../language }}/creation/{{ creation.id }}">
+                                        href="/{{ ../language }}/creation/{{ creation.slug }}">
                                         <strong>{{ creation.insides }}</strong>
                                         {{ lang "insides" }}
                                     </a>

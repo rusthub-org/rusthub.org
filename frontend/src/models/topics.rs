@@ -11,14 +11,14 @@ type ObjectId = String;
     schema_path = "../assets/graphql/schema.graphql",
     query_path = "../assets/graphql/topics.graphql"
 )]
-pub struct TopicsNewData;
+pub struct TopicBySlugData;
 
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "../assets/graphql/schema.graphql",
     query_path = "../assets/graphql/topics.graphql"
 )]
-pub struct TopicBySlugData;
+pub struct TopicsNewData;
 
 #[derive(GraphQLQuery)]
 #[graphql(

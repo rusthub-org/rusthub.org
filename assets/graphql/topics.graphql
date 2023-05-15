@@ -1,13 +1,3 @@
-mutation TopicsNewData(
-  $topicNames: String!
-) {
-  topicsNew(
-    topicNames: $topicNames
-  ) {
-    id
-  }
-}
-
 query TopicBySlugData(
   $slug: String!
 ) {
@@ -18,6 +8,16 @@ query TopicBySlugData(
     name
     quotes
     slug
+  }
+}
+
+mutation TopicsNewData(
+  $topicNames: String!
+) {
+  topicsNew(
+    topicNames: $topicNames
+  ) {
+    id
   }
 }
 

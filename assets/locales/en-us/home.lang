@@ -58,7 +58,7 @@ email-body = Hi, { $nickname } ({ $username })!
     <br><br>
     This email sent from RustHub.org, it is your RustHub account activation email.
     <br><br>
-    Please visit URL: https://{ $domain }/{ $language }/user/{ $user_id }/activate to activate your account.
+    Please visit URL: https://{ $domain }/{ $language }/user/{ $username }/activate to activate your account.
     <br><br>
     If you can not visit URL from the email, please copy the URL to the browser address, and then visit it.
     <br><br>

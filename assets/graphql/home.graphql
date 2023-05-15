@@ -19,8 +19,8 @@ query HomeData(
 }
 
 fragment creations_in_position_fragment on Creation {
-  id
   subject
+  slug
   updatedAtYmd
   updatedAtYmd8
   hits

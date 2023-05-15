@@ -73,7 +73,7 @@ async fn init_index<'ii>(
             .recv_json()
             .await
             .unwrap();
-    let home_resp_data = home_resp_body.data.expect("无响应数据");
+    let home_resp_data = home_resp_body.data.unwrap();
 
     let recommended_creations = home_resp_data["recommendedCreations"].clone();
     data.insert("recommended_creations", recommended_creations);
@@ -170,7 +170,6 @@ pub async fn register(mut req: Request<State>) -> tide::Result {
 
                 send_email(
                     language,
-                    user_id.to_string(),
                     register_info.username,
                     register_info.nickname,
                     register_info.email,

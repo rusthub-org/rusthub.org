@@ -72,7 +72,7 @@ pub struct CreationData;
     schema_path = "../assets/graphql/schema.graphql",
     query_path = "../assets/graphql/creations.graphql"
 )]
-pub struct CreationUpdateOneFieldByIdData;
+pub struct CreationUpdateOneFieldBySlugData;
 
 #[derive(GraphQLQuery)]
 #[graphql(

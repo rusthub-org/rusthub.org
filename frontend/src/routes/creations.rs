@@ -24,9 +24,10 @@ use crate::models::{
         creations_by_user_data, CreationsByTopicData, creations_by_topic_data,
         CreationsByFilterData, creations_by_filter_data, CreationData,
         creation_data, CreationNewData, creation_new_data,
-        CreationUpdateOneFieldByIdData, creation_update_one_field_by_id_data,
-        CreationRandomData, creation_random_data, FileNewData, file_new_data,
-        CreationFileNewData, creation_file_new_data,
+        CreationUpdateOneFieldBySlugData,
+        creation_update_one_field_by_slug_data, CreationRandomData,
+        creation_random_data, FileNewData, file_new_data, CreationFileNewData,
+        creation_file_new_data,
     },
     topics::{
         TopicsNewData, topics_new_data, TopicCreationNewData,
@@ -79,7 +80,7 @@ pub async fn creations_index(req: Request<State>) -> tide::Result {
             .recv_json()
             .await
             .unwrap();
-    let creations_resp_data = creations_resp_body.data.expect("无响应数据");
+    let creations_resp_data = creations_resp_body.data.unwrap();
 
     let creations = creations_resp_data["creations"].clone();
     data.insert("pagination", creations);
@@ -129,7 +130,7 @@ pub async fn creations_by_user(req: Request<State>) -> tide::Result {
             .await
             .unwrap();
     let author_by_username_resp_data =
-        author_by_username_resp_body.data.expect("无响应数据");
+        author_by_username_resp_body.data.unwrap();
 
     let author = &author_by_username_resp_data["userByUsername"];
     let author_content = author["nickname"].as_str().unwrap().to_string()
@@ -160,8 +161,7 @@ pub async fn creations_by_user(req: Request<State>) -> tide::Result {
             .body(creations_by_user_query)
             .recv_json()
             .await?;
-    let creations_by_user_resp_data =
-        creations_by_user_resp_body.data.expect("无响应数据");
+    let creations_by_user_resp_data = creations_by_user_resp_body.data.unwrap();
 
     let creations_by_user =
         creations_by_user_resp_data["creationsByUsername"].clone();
@@ -212,8 +212,7 @@ pub async fn creations_by_topic(req: Request<State>) -> tide::Result {
             .recv_json()
             .await
             .unwrap();
-    let topic_by_slug_resp_data =
-        topic_by_slug_resp_body.data.expect("无响应数据");
+    let topic_by_slug_resp_data = topic_by_slug_resp_body.data.unwrap();
 
     let topic = &topic_by_slug_resp_data["topicBySlug"];
     data.insert(
@@ -241,7 +240,7 @@ pub async fn creations_by_topic(req: Request<State>) -> tide::Result {
             .recv_json()
             .await?;
     let creations_by_topic_resp_data =
-        creations_by_topic_resp_body.data.expect("无响应数据");
+        creations_by_topic_resp_body.data.unwrap();
 
     let creations_by_topic =
         creations_by_topic_resp_data["creationsByTopicSlug"].clone();
@@ -315,7 +314,7 @@ pub async fn creations_filter(req: Request<State>) -> tide::Result {
             .recv_json()
             .await?;
     let creations_by_filter_resp_data =
-        creations_by_filter_resp_body.data.expect("无响应数据");
+        creations_by_filter_resp_body.data.unwrap();
 
     let creations_by_filter =
         creations_by_filter_resp_data["creationsByFilter"].clone();
@@ -508,12 +507,12 @@ pub async fn creation_index(req: Request<State>) -> tide::Result {
         insert_user_by_username(sign_status.username, &mut data).await;
     }
 
-    let creation_id = req.param("creation_id")?;
+    let creation_slug = req.param("creation_slug")?;
 
     let creation_update_hits_build_query =
-        CreationUpdateOneFieldByIdData::build_query(
-            creation_update_one_field_by_id_data::Variables {
-                creation_id: creation_id.to_string(),
+        CreationUpdateOneFieldBySlugData::build_query(
+            creation_update_one_field_by_slug_data::Variables {
+                creation_slug: creation_slug.to_string(),
                 field_name: String::from("hits"),
                 field_val: String::from("1"),
             },
@@ -527,15 +526,15 @@ pub async fn creation_index(req: Request<State>) -> tide::Result {
 
     let creation_build_query =
         CreationData::build_query(creation_data::Variables {
-            creation_id: creation_id.to_string(),
+            creation_slug: creation_slug.to_owned(),
         });
     let creation_query = json!(creation_build_query);
 
     let creation_resp_body: GqlResponse<serde_json::Value> =
         surf::post(&gql_uri().await).body(creation_query).recv_json().await?;
-    let creation_resp_data = creation_resp_body.data.expect("无响应数据");
+    let creation_resp_data = creation_resp_body.data.unwrap();
 
-    let creation = creation_resp_data["creationById"].clone();
+    let creation = creation_resp_data["creationBySlug"].clone();
     data.insert("creation", creation);
 
     creation_index_tpl.render(&data).await
@@ -553,14 +552,47 @@ pub async fn creation_random(req: Request<State>) -> tide::Result {
             .body(creation_random_query)
             .recv_json()
             .await?;
-    let creation_random_resp_data =
-        creation_random_resp_body.data.expect("无响应数据");
+    let creation_random_resp_data = creation_random_resp_body.data.unwrap();
 
     let creation_random_id =
         creation_random_resp_data["creationRandomId"].as_str().unwrap();
     let resp: Response =
         Redirect::new(format!("/{}/creation/{}", language, creation_random_id))
             .into();
+
+    Ok(resp.into())
+}
+
+pub async fn creation_update_one_field(req: Request<State>) -> tide::Result {
+    let creation_slug = req.param("creation_slug")?;
+    let field_name = req.param("field_name")?;
+    let field_val = req.param("field_val")?;
+
+    let creation_update_one_field_build_query =
+        CreationUpdateOneFieldBySlugData::build_query(
+            creation_update_one_field_by_slug_data::Variables {
+                creation_slug: creation_slug.to_owned(),
+                field_name: String::from(field_name),
+                field_val: String::from(field_val),
+            },
+        );
+    let creation_update_one_field_query =
+        json!(creation_update_one_field_build_query);
+
+    let creation_update_one_field_resp_body: GqlResponse<serde_json::Value> =
+        surf::post(&gql_uri().await)
+            .body(creation_update_one_field_query)
+            .recv_json()
+            .await?;
+    let creation_update_one_field_resp_data =
+        creation_update_one_field_resp_body.data;
+
+    let resp;
+    if creation_update_one_field_resp_data.is_some() {
+        resp = json!({"done": true});
+    } else {
+        resp = json!({"done": false});
+    }
 
     Ok(resp.into())
 }
@@ -588,7 +620,7 @@ pub async fn file_new(req: Request<State>) -> tide::Result {
 
     let file_copy = file_copy(req, file_path).await;
 
-    let res;
+    let resp;
     if file_copy.is_ok() {
         let file_new_build_query =
             FileNewData::build_query(file_new_data::Variables {
@@ -603,12 +635,12 @@ pub async fn file_new(req: Request<State>) -> tide::Result {
                 .body(file_new_query)
                 .recv_json()
                 .await?;
-        let file_new_resp_data = file_new_resp_body.data.expect("无响应数据");
+        let file_new_resp_data = file_new_resp_body.data.unwrap();
 
         let file_new_result = &file_new_resp_data["fileNew"];
         let file_id = file_new_result["id"].as_str().unwrap();
 
-        res = json!({
+        resp = json!({
             "done": true,
             "file_id": file_id,
             "file_name": file_name,
@@ -621,11 +653,11 @@ pub async fn file_new(req: Request<State>) -> tide::Result {
             _ => "Upload exception: please contact",
         };
 
-        res = json!({
+        resp = json!({
             "done": false,
             "err": format!("{} {}", err, "ask@rusthub.org")
         });
     }
 
-    Ok(res.into())
+    Ok(resp.into())
 }

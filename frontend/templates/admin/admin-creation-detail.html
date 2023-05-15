@@ -29,8 +29,8 @@
                 </script> --}}
 
                 <article class="s-card my12">
-                    <a class="mb6 fs-body3 fw-bold fc-theme-secondary-400" href="{{ creation.website }}"
-                        target="_blank">
+                    <a class="mb6 fs-body3 fw-bold fc-theme-secondary-400" href="{{ creation.website }}" target="_blank"
+                        onclick="updateCreationOneField(this, '{{ language }}', '{{ creation.slug }}', 'insides', 1)">
                         {{#if (str-cmp creation.status -3) }}
                             <span class="mr2 s-tag s-tag__moderator fw-normal fs-caption">
                                 {{ lang "admin-creation-deleted" }}
@@ -83,20 +83,21 @@
                         {{/if}}
                     </p>
                     <p class="my6 pl4 fs-body1">
-                        <a href="/{{ language }}/creation/{{ creation.id }}" target="_blank">
+                        <span>
                             <strong>{{ creation.hits }}</strong>
                             {{ lang "hits" }}
-                        </a>
+                        </span>
                         <span class="mx4 fc-red-600">/</span>
-                        <a href="/{{ language }}/creation/{{ creation.id }}" target="_blank">
+                        <button class="s-btn s-btn__xs s-btn__outlined"
+                            onclick="updateCreationOneField(this, '{{ language }}', '{{ creation.slug }}', 'stars', 1)">
                             <strong>{{ creation.stars }}</strong>
                             {{ lang "stars" }}
-                        </a>
+                        </button>
                         <span class="mx4 fc-red-600">/</span>
-                        <a href="/{{ language }}/creation/{{ creation.id }}" target="_blank">
+                        <span>
                             <strong>{{ creation.insides }}</strong>
                             {{ lang "insides" }}
-                        </a>
+                        </span>
                     </p>
 
                     <p class="my6 p4 fw-bold bg-blue-100 fc-blue-900">
@@ -142,7 +143,8 @@
                     <p class="my6 fs-body1">
                         <strong>{{ lang "creation-website" }}</strong>
                         {{#if creation.website }}
-                            <a href="{{ creation.website }}" target="_blank">
+                            <a href="{{ creation.website }}" target="_blank"
+                                onclick="updateCreationOneField(this, '{{ language }}', '{{ creation.slug }}', 'insides', 1)">
                                 {{ creation.website }}
                             </a>
                         {{else}}
@@ -152,7 +154,8 @@
                     <p class="my6 fs-body1">
                         <strong>{{ lang "creation-source-url" }}</strong>
                         {{#if creation.sourceUrl }}
-                            <a href="{{ creation.sourceUrl }}" target="_blank">
+                            <a href="{{ creation.sourceUrl }}" target="_blank"
+                                onclick="updateCreationOneField(this, '{{ language }}', '{{ creation.slug }}', 'insides', 1)">
                                 {{ creation.sourceUrl }}
                             </a>
                         {{else}}
@@ -183,19 +186,20 @@
 
                     <p class="my16">
                         <a class="mx4 p6 s-btn s-btn__md s-btn__danger s-btn__outlined"
-                            href="{{ creation.id }}/status/-3">
+                            href="{{ creation.slug }}/status/-3">
                             <del>{{ lang "admin-creation-delete" }}</del>
                         </a>
-                        <a class="mx4 p6 s-btn s-btn__md s-btn__muted s-btn__filled" href="{{ creation.id }}/status/-2">
+                        <a class="mx4 p6 s-btn s-btn__md s-btn__muted s-btn__filled"
+                            href="{{ creation.slug }}/status/-2">
                             {{ lang "admin-creation-reject" }}
                         </a>
-                        <a class="mx4 p6 s-btn s-btn__md s-btn__outlined" href="{{ creation.id }}/status/1">
+                        <a class="mx4 p6 s-btn s-btn__md s-btn__outlined" href="{{ creation.slug }}/status/1">
                             {{ lang "admin-creation-approve" }}
                         </a>
-                        <a class="mx4 p6 s-btn s-btn__md is-selected" href="{{ creation.id }}/status/2">
+                        <a class="mx4 p6 s-btn s-btn__md is-selected" href="{{ creation.slug }}/status/2">
                             {{ lang "admin-creation-recommend" }}
                         </a>
-                        <a class="mx4 p6 s-btn s-btn__md is-selected s-btn__filled" href="{{ creation.id }}/status/3">
+                        <a class="mx4 p6 s-btn s-btn__md is-selected s-btn__filled" href="{{ creation.slug }}/status/3">
                             {{ lang "admin-creation-batch" }}
                         </a>
                     </p>

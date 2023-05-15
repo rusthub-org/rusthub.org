@@ -13,9 +13,7 @@ use crate::util::{
 use crate::models::{
     Page,
     users::{
-        UsersData, users_data, UserByIdData, user_by_id_data,
-        UserByUsernameDetailData, user_by_username_detail_data,
-        UserUpdateOneFieldByIdData, user_update_one_field_by_id_data,
+        UsersData, users_data, UserByUsernameData, user_by_username_data,
         UserUpdateOneFieldByUsernameData,
         user_update_one_field_by_username_data,
     },
@@ -66,7 +64,7 @@ pub async fn users_index(req: Request<State>) -> tide::Result {
 
     let users_resp_body: GqlResponse<serde_json::Value> =
         surf::post(&gql_uri().await).body(users_query).recv_json().await?;
-    let users_resp_data = users_resp_body.data.expect("无响应数据");
+    let users_resp_data = users_resp_body.data.unwrap();
 
     let users = users_resp_data["users"].clone();
     data.insert("pagination", users);
@@ -123,27 +121,23 @@ pub async fn user_index(req: Request<State>) -> tide::Result {
             .recv_json()
             .await?;
 
-    let author_by_username_detail_build_query =
-        UserByUsernameDetailData::build_query(
-            user_by_username_detail_data::Variables {
-                username: String::from(author_username),
-            },
-        );
-    let author_by_username_detail_query =
-        json!(author_by_username_detail_build_query);
+    let author_by_username_build_query =
+        UserByUsernameData::build_query(user_by_username_data::Variables {
+            username: String::from(author_username),
+        });
+    let author_by_username_query = json!(author_by_username_build_query);
 
-    let author_by_username_detail_resp_body: GqlResponse<serde_json::Value> =
+    let author_by_username_resp_body: GqlResponse<serde_json::Value> =
         surf::post(&gql_uri().await)
-            .body(author_by_username_detail_query)
+            .body(author_by_username_query)
             .recv_json()
             .await
             .unwrap();
-    let author_by_username_detail_resp_data =
-        author_by_username_detail_resp_body.data.expect("无响应数据");
+    let author_by_username_resp_data =
+        author_by_username_resp_body.data.unwrap();
 
-    let author_user_detail =
-        author_by_username_detail_resp_data["userByUsername"].clone();
-    data.insert("author_user", author_user_detail);
+    let author_user = author_by_username_resp_data["userByUsername"].clone();
+    data.insert("author_user", author_user);
 
     user_index_tpl.render(&data).await
 }
@@ -169,13 +163,14 @@ pub async fn user_activate(req: Request<State>) -> tide::Result {
     data.insert("nav-users-selected", json!("is-selected"));
     insert_wish_random(&mut data).await;
 
-    let user_id = req.param("user_id")?;
+    let author_username = req.param("author_username")?;
     match req.method() {
         Method::Post => {
-            let user_resend_build_query =
-                UserByIdData::build_query(user_by_id_data::Variables {
-                    id: user_id.to_string(),
-                });
+            let user_resend_build_query = UserByUsernameData::build_query(
+                user_by_username_data::Variables {
+                    username: author_username.to_owned(),
+                },
+            );
             let user_resend_query = json!(user_resend_build_query);
 
             let user_resend_resp_body: GqlResponse<serde_json::Value> =
@@ -183,14 +178,12 @@ pub async fn user_activate(req: Request<State>) -> tide::Result {
                     .body(user_resend_query)
                     .recv_json()
                     .await?;
-            let user_resend_resp_data =
-                user_resend_resp_body.data.expect("无响应数据");
+            let user_resend_resp_data = user_resend_resp_body.data.unwrap();
 
             let user_resend = user_resend_resp_data["userById"].clone();
 
             send_email(
                 language,
-                user_id.to_string(),
                 user_resend["username"].as_str().unwrap().to_string(),
                 user_resend["nickname"].as_str().unwrap().to_string(),
                 user_resend["email"].as_str().unwrap().to_string(),
@@ -201,10 +194,10 @@ pub async fn user_activate(req: Request<State>) -> tide::Result {
         }
         _ => {
             let user_activate_build_query =
-                UserUpdateOneFieldByIdData::build_query(
-                    user_update_one_field_by_id_data::Variables {
-                        user_id: user_id.to_string(),
-                        field_name: String::from("status"),
+                UserUpdateOneFieldByUsernameData::build_query(
+                    user_update_one_field_by_username_data::Variables {
+                        username: author_username.to_owned(),
+                        field_name: String::from("activate"),
                         field_val: String::from("1"),
                     },
                 );
@@ -215,11 +208,10 @@ pub async fn user_activate(req: Request<State>) -> tide::Result {
                     .body(user_activate_query)
                     .recv_json()
                     .await?;
-            let user_activate_resp_data =
-                user_activate_resp_body.data.expect("无响应数据");
+            let user_activate_resp_data = user_activate_resp_body.data.unwrap();
 
             let user_activate =
-                user_activate_resp_data["userUpdateOneFieldById"].clone();
+                user_activate_resp_data["userUpdateOneFieldByUsername"].clone();
 
             data.insert("user_activate", user_activate);
         }

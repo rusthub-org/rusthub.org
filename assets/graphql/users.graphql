@@ -1,32 +1,4 @@
-query UserByIdData(
-  $id: ObjectId!
-) {
-  userById(
-    id: $id
-  ) {
-    username
-    nickname
-    email
-  }
-}
-
 query UserByUsernameData(
-  $username: String!
-) {
-  userByUsername(
-    username: $username
-  ) {
-    id
-    username
-    nickname
-    email
-    phoneNumber
-    imAccount
-    status
-  }
-}
-
-query UserByUsernameDetailData(
   $username: String!
 ) {
   userByUsername(
@@ -105,22 +77,6 @@ query UsersData(
   }
 }
 
-mutation UserUpdateOneFieldByIdData(
-  $userId: ObjectId!
-  $fieldName: String!
-  $fieldVal: String!
-) {
-  userUpdateOneFieldById(
-    userId: $userId
-    fieldName: $fieldName
-    fieldVal: $fieldVal
-    ) {
-      username
-      nickname
-      email
-  }
-}
-
 mutation UserUpdateOneFieldByUsernameData(
   $username: String!
   $fieldName: String!
@@ -133,7 +89,8 @@ mutation UserUpdateOneFieldByUsernameData(
     ) {
       username
       nickname
-      email
+      createdAtYmdhmsz
+      createdAtYmdhmsz8
   }
 }
 

@@ -7,6 +7,7 @@ type Creation {
   id: ObjectId!
   userId: ObjectId!
   subject: String!
+  slug: String!
   content: String!
   website: String!
   sourceUrl: String!
@@ -88,28 +89,22 @@ type MutationRoot {
   userRegister(userNew: UserNew!): User!
   userChangePassword(pwdCur: String!, pwdNew: String!, token: String!): User!
   userUpdateProfile(userNew: UserNew!, token: String!): User!
-  userUpdateOneFieldById(
-    userId: ObjectId!
-    fieldName: String!
-    fieldVal: String!
-  ): User!
   userUpdateOneFieldByUsername(
     username: String!
     fieldName: String!
     fieldVal: String!
   ): User!
   creationNew(creationNew: CreationNew!): Creation!
-  creationUpdateOneFieldById(
-    creationId: ObjectId!
+  creationUpdateOneFieldBySlug(
+    creationSlug: String!
     fieldName: String!
     fieldVal: String!
   ): Creation!
-  fileNew(fileNew: FileNew!): File!
-  creationFileNew(creationFileNew: CreationFileNew!): CreationFile!
-  topicNew(topicNew: TopicNew!): Topic!
   topicsNew(topicNames: String!): [Topic!]!
   topicUserNew(topicUserNew: TopicUserNew!): TopicUser!
   topicCreationNew(topicCreationNew: TopicCreationNew!): TopicCreation!
+  fileNew(fileNew: FileNew!): File!
+  creationFileNew(creationFileNew: CreationFileNew!): CreationFile!
   wishNew(wishNew: WishNew!): Wish!
 }
 
@@ -126,8 +121,6 @@ type PageInfo {
 
 type QueryRoot {
   userSignIn(signature: String!, password: String!): SignInfo!
-  userById(id: ObjectId!): User!
-  userByEmail(email: String!): User!
   userByUsername(username: String!): User!
   users(
     fromPage: Int!
@@ -135,7 +128,7 @@ type QueryRoot {
     lastOid: String!
     status: Int!
   ): UsersResult!
-  creationById(creationId: ObjectId!): Creation!
+  creationBySlug(creationSlug: String!): Creation!
   creationRandomId: ObjectId!
   creations(
     fromPage: Int!
@@ -148,22 +141,8 @@ type QueryRoot {
     position: String!
     limit: Int!
   ): [Creation!]!
-  creationsByUserId(
-    userId: ObjectId!
-    fromPage: Int!
-    firstOid: String!
-    lastOid: String!
-    status: Int!
-  ): CreationsResult!
   creationsByUsername(
     username: String!
-    fromPage: Int!
-    firstOid: String!
-    lastOid: String!
-    status: Int!
-  ): CreationsResult!
-  creationsByTopicId(
-    topicId: ObjectId!
     fromPage: Int!
     firstOid: String!
     lastOid: String!
@@ -183,25 +162,7 @@ type QueryRoot {
     lastOid: String!
     status: Int!
   ): CreationsResult!
-  fileById(id: ObjectId!): File!
-  fileByKindCreationId(
-    creationId: ObjectId!
-    fileKind: Int!
-    fileStatus: Int!
-  ): File!
-  filesByKindCreationId(
-    creationId: ObjectId!
-    fileKind: Int!
-    fileStatus: Int!
-  ): [File!]!
-  topicById(id: ObjectId!): Topic!
   topicBySlug(slug: String!): Topic!
-  topics: [Topic!]!
-  topicsByCreationId(creationId: ObjectId!): [Topic!]!
-  keywordsByUserId(userId: ObjectId!): [Topic!]!
-  keywordsByUsername(username: String!): [Topic!]!
-  topicsByUserId(userId: ObjectId!): [Topic!]!
-  topicsByUsername(username: String!): [Topic!]!
   wishes(status: Int!): [Wish!]!
   wishRandom(username: String!): Wish!
 }
@@ -235,11 +196,6 @@ input TopicCreationNew {
   userId: ObjectId!
   creationId: ObjectId!
   topicId: ObjectId!
-}
-
-input TopicNew {
-  name: String!
-  quotes: Int! = 1
 }
 
 type TopicUser {

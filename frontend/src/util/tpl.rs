@@ -5,11 +5,11 @@ use graphql_client::{GraphQLQuery, Response as GqlResponse};
 use serde::Serialize;
 use serde_json::json;
 
-use super::common::{gql_uri, scripts_dir, tpls_dir, get_lang_msg};
-
-use crate::models::users::{
-    UserByUsernameData, user_by_username_data, WishRandomData, wish_random_data,
+use super::common::{
+    gql_uri, scripts_dir, tpls_dir, get_user_by_username, get_lang_msg,
 };
+
+use crate::models::users::{WishRandomData, wish_random_data};
 
 pub struct Hbs<'hbs> {
     pub name: String,
@@ -212,22 +212,7 @@ pub async fn insert_user_by_username(
     sign_username: String,
     data: &mut BTreeMap<&str, serde_json::Value>,
 ) {
-    let user_by_username_build_query =
-        UserByUsernameData::build_query(user_by_username_data::Variables {
-            username: sign_username,
-        });
-    let user_by_username_query = json!(user_by_username_build_query);
-
-    let user_by_username_resp_body: GqlResponse<serde_json::Value> =
-        surf::post(&gql_uri().await)
-            .body(user_by_username_query)
-            .recv_json()
-            .await
-            .unwrap();
-    let user_by_username_resp_data =
-        user_by_username_resp_body.data.expect("无响应数据");
-
-    let user = user_by_username_resp_data["userByUsername"].clone();
+    let user = get_user_by_username(sign_username).await;
     data.insert("user", user);
 }
 
@@ -244,7 +229,7 @@ pub async fn insert_wish_random(data: &mut BTreeMap<&str, serde_json::Value>) {
             .recv_json()
             .await
             .unwrap();
-    let wish_random_resp_data = wish_random_resp_body.data.expect("无响应数据");
+    let wish_random_resp_data = wish_random_resp_body.data.unwrap();
 
     let wish = wish_random_resp_data["wishRandom"].clone();
     data.insert("wish", wish);

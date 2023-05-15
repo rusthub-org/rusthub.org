@@ -33,7 +33,8 @@
                 <span class="ml8 fc-danger fs-fine">{{ lang "creation-risk-tip" }}</span>
                 <article class="s-card my12">
                     <h1 class="mb6">
-                        <a href="{{ creation.website }}" target="_blank">
+                        <a href="{{ creation.website }}" target="_blank"
+                            onclick="updateCreationOneField(this, '{{ language }}', '{{ creation.slug }}', 'insides', 1)">
                             {{ creation.subject }}
                             <sup class="fw-normal fs-fine">No.{{ creation.id }}</sup>
                         </a>
@@ -56,20 +57,21 @@
                         {{/if}}
                     </p>
                     <p class="my6 pl4 fs-body1">
-                        <a href="/{{ language }}/creation/{{ creation.id }}">
+                        <span>
                             <strong>{{ creation.hits }}</strong>
                             {{ lang "hits" }}
-                        </a>
+                        </span>
                         <span class="mx4 fc-red-600">/</span>
-                        <a href="/{{ language }}/creation/{{ creation.id }}">
+                        <button class="s-btn s-btn__xs s-btn__outlined"
+                            onclick="updateCreationOneField(this, '{{ language }}', '{{ creation.slug }}', 'stars', 1)">
                             <strong>{{ creation.stars }}</strong>
                             {{ lang "stars" }}
-                        </a>
+                        </button>
                         <span class="mx4 fc-red-600">/</span>
-                        <a href="/{{ language }}/creation/{{ creation.id }}">
+                        <span>
                             <strong>{{ creation.insides }}</strong>
                             {{ lang "insides" }}
-                        </a>
+                        </span>
                     </p>
 
                     <p class="my6 p4 fw-bold bg-blue-100 fc-blue-900">
@@ -115,7 +117,8 @@
                     <p class="my6 fs-body1">
                         <strong>{{ lang "creation-website" }}</strong>
                         {{#if creation.website }}
-                            <a href="{{ creation.website }}" target="_blank">
+                            <a href="{{ creation.website }}" target="_blank"
+                                onclick="updateCreationOneField(this, '{{ language }}', '{{ creation.slug }}', 'insides', 1)">
                                 {{ creation.website }}
                             </a>
                         {{else}}
@@ -125,7 +128,8 @@
                     <p class="my6 fs-body1">
                         <strong>{{ lang "creation-source-url" }}</strong>
                         {{#if creation.sourceUrl }}
-                            <a href="{{ creation.sourceUrl }}" target="_blank">
+                            <a href="{{ creation.sourceUrl }}" target="_blank"
+                                onclick="updateCreationOneField(this, '{{ language }}', '{{ creation.slug }}', 'insides', 1)">
                                 {{ creation.sourceUrl }}
                             </a>
                         {{else}}

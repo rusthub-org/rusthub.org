@@ -17,10 +17,10 @@ user-activate = User Account Activation
 user-activated = The RustHub account has been activated successfully!
 user-re-activate = User account activation email has been re-sent!
 user-activated-result = <span class="fw-bold fc-blue-600">{ $nickname }</span>, Congratulate!
-    The RustHub account has been activated successfully!
+    The RustHub account has been activated successfully! No need to reactivate.
     <br><br>
     <span class="fw-bold">Username</span>: { $username };
-    <span class="fw-bold">Email</span>: { $email }.
+    <span class="fw-bold">Registration time</span>: { $createdAtYmdhmsz }.
 user-re-activate-result = <span class="fw-bold fc-blue-600">{ $nickname }</span>,
     Your RustHub account activation email has been re-sent!
     <br><br>

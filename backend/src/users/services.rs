@@ -18,6 +18,7 @@ use crate::util::{
         calculate_current_filter_skip, find_options,
     },
 };
+use crate::dbs::info::*;
 
 use super::models::{User, UserNew, SignInfo, Wish, WishNew};
 
@@ -27,7 +28,7 @@ pub async fn user_register(
     db: &Database,
     mut user_new: UserNew,
 ) -> GqlResult<User> {
-    let coll = db.collection::<Document>("users");
+    let coll = db.collection::<Document>(COLL_USERS);
 
     user_new.email = user_new.email.trim().to_lowercase();
     user_new.username = user_new.username.trim().to_lowercase();
@@ -43,7 +44,7 @@ pub async fn user_register(
         new_document.insert("updated_at", now);
 
         let user_res =
-            coll.insert_one(new_document, None).await.expect("写入未成功");
+            coll.insert_one(new_document, None).await.expect(ERR_INSERT_PANIC);
         let user_id = from_bson(user_res.inserted_id)?;
 
         user_by_id(db, user_id).await
@@ -90,7 +91,7 @@ pub async fn user_sign_in(
 
                     let mut sign_info = SignInfo {
                         username: user.username,
-                        token: String::from("无令牌！"),
+                        token: String::new(),
                     };
                     sign_info.token = encode(
                         &header,
@@ -113,76 +114,12 @@ pub async fn user_sign_in(
     }
 }
 
-// get user info by id
-pub async fn user_by_id(db: &Database, id: ObjectId) -> GqlResult<User> {
-    let coll = db.collection::<Document>("users");
-
-    let user_document = coll
-        .find_one(doc! {"_id": id}, None)
-        .await
-        .expect("账户不存在")
-        .unwrap();
-
-    let user: User = from_document(user_document)?;
-    Ok(user)
-}
-
-pub async fn user_update_one_field_by_id(
-    db: &Database,
-    user_id: ObjectId,
-    field_name: String,
-    field_val: String,
-) -> GqlResult<User> {
-    let coll = db.collection::<Document>("users");
-
-    let query_doc = doc! {"_id": user_id};
-    let update_doc = match field_name.as_str() {
-        "status" => {
-            doc! {"$set": {
-                field_name: field_val.parse::<i32>()?,
-                "updated_at": DateTime::now()
-            }}
-        }
-        "hits" => {
-            doc! {"$inc": {field_name: field_val.parse::<i64>()?}}
-        }
-        _ => doc! {},
-    };
-
-    coll.update_one(query_doc, update_doc, None).await?;
-
-    user_by_id(db, user_id).await
-}
-
-pub async fn user_update_one_field_by_username(
-    db: &Database,
-    username: String,
-    field_name: String,
-    field_val: String,
-) -> GqlResult<User> {
-    let user: User = user_by_username(db, username).await?;
-    user_update_one_field_by_id(db, user._id, field_name, field_val).await
-}
-
-// get user info by email
-pub async fn user_by_email(db: &Database, email: String) -> GqlResult<User> {
-    let coll = db.collection::<Document>("users");
-
-    let user_document = coll.find_one(doc! {"email": &email}, None).await?;
-    if user_document.is_some() {
-        let user: User = from_document(user_document.unwrap())?;
-        Ok(user)
-    } else {
-        Err(Error::new(format!("{} - 未注册", email)))
-    }
-}
-
 // get user info by username
 pub async fn user_by_username(
     db: &Database,
     username: String,
 ) -> GqlResult<User> {
-    let coll = db.collection::<Document>("users");
+    let coll = db.collection::<Document>(COLL_USERS);
 
     let user_document =
         coll.find_one(doc! {"username": &username}, None).await?;
@@ -190,7 +127,34 @@ pub async fn user_by_username(
         let user: User = from_document(user_document.unwrap())?;
         Ok(user)
     } else {
-        Err(Error::new(format!("{} - 未注册", username)))
+        Err(Error::new(format!("{} - {}", username, ERR_FIND_PANIC)))
+    }
+}
+
+// get user info by id
+pub async fn user_by_id(db: &Database, id: ObjectId) -> GqlResult<User> {
+    let coll = db.collection::<Document>(COLL_USERS);
+
+    let user_document = coll
+        .find_one(doc! {"_id": id}, None)
+        .await
+        .expect(ERR_FIND_PANIC)
+        .unwrap();
+
+    let user: User = from_document(user_document)?;
+    Ok(user)
+}
+
+// get user info by email
+async fn user_by_email(db: &Database, email: String) -> GqlResult<User> {
+    let coll = db.collection::<Document>(COLL_USERS);
+
+    let user_document = coll.find_one(doc! {"email": &email}, None).await?;
+    if user_document.is_some() {
+        let user: User = from_document(user_document.unwrap())?;
+        Ok(user)
+    } else {
+        Err(Error::new(format!("{} - {}", email, ERR_FIND_PANIC)))
     }
 }
 
@@ -209,24 +173,24 @@ pub async fn user_change_password(
             if cred_verify(&user.username, &pwd_cur, &user.cred).await {
                 user.cred = cred_encode(&user.username, &pwd_new).await;
 
-                let coll = db.collection::<Document>("users");
+                let coll = db.collection::<Document>(COLL_USERS);
                 coll.update_one(
                     doc! {"_id": &user._id},
                     doc! {"$set": {"cred": &user.cred}},
                     None,
                 )
                 .await
-                .expect("更新未成功");
+                .expect(ERR_UPDATE_PANIC);
 
                 Ok(user)
             } else {
-                Err(Error::new("密码验证失败"))
+                Err(Error::new(ERR_PWD_INVALID))
             }
         } else {
-            Err(Error::new("账户未注册"))
+            Err(Error::new(ERR_FIND_PANIC))
         }
     } else {
-        Err(Error::new("令牌验证失败"))
+        Err(Error::new(ERR_TOKEN_INVALID))
     }
 }
 
@@ -241,7 +205,7 @@ pub async fn user_update_profile(
         let email = data.claims.email;
         let user_res = user_by_email(db, email).await;
         if let Ok(mut user) = user_res {
-            let coll = db.collection::<Document>("users");
+            let coll = db.collection::<Document>(COLL_USERS);
 
             user.email = user_new.email.to_lowercase();
             user.username = user_new.username.to_lowercase();
@@ -254,15 +218,54 @@ pub async fn user_update_profile(
                 None,
             )
             .await
-            .expect("更新未成功");
+            .expect(ERR_UPDATE_PANIC);
 
             Ok(user)
         } else {
-            Err(Error::new("账户未注册"))
+            Err(Error::new(ERR_FIND_PANIC))
         }
     } else {
-        Err(Error::new("令牌验证失败"))
+        Err(Error::new(ERR_TOKEN_INVALID))
     }
+}
+
+pub async fn user_update_one_field_by_username(
+    db: &Database,
+    username: String,
+    field_name: String,
+    field_val: String,
+) -> GqlResult<User> {
+    let coll = db.collection::<Document>(COLL_USERS);
+
+    let query_doc = doc! {"username": username.to_owned()};
+    let update_doc = match field_name.as_str() {
+        "activate" => {
+            let user = user_by_username(db, username.to_owned()).await?;
+            match user.status {
+                0 => {
+                    doc! {"$set": {
+                        "status": 1,
+                        "updated_at": DateTime::now()
+                    }}
+                }
+                _ => doc! {"$set": {}},
+            }
+        }
+        "status" => {
+            doc! {"$set": {
+                field_name: field_val.parse::<i32>()?,
+                "updated_at": DateTime::now()
+            }}
+        }
+        "hits" => {
+            doc! {"$inc": {field_name: field_val.parse::<i64>()?}}
+        }
+        _ => doc! {},
+    };
+
+    coll.update_one(query_doc, update_doc, None).await?;
+
+    user_by_username(db, username).await
 }
 
 // Get all Users
@@ -273,7 +276,7 @@ pub async fn users(
     last_oid: String,
     status: i8,
 ) -> GqlResult<UsersResult> {
-    let coll = db.collection::<Document>("users");
+    let coll = db.collection::<Document>(COLL_USERS);
 
     let mut filter_doc = doc! {
         "status": {
@@ -337,7 +340,7 @@ pub async fn users(
 
 // Create new wish
 pub async fn wish_new(db: &Database, wish_new: WishNew) -> GqlResult<Wish> {
-    let coll = db.collection::<Document>("wishes");
+    let coll = db.collection::<Document>(COLL_WISHES);
 
     let exist_document = coll
         .find_one(
@@ -353,32 +356,18 @@ pub async fn wish_new(db: &Database, wish_new: WishNew) -> GqlResult<Wish> {
         new_document.insert("updated_at", now);
 
         let wish_res =
-            coll.insert_one(new_document, None).await.expect("写入未成功");
+            coll.insert_one(new_document, None).await.expect(ERR_INSERT_PANIC);
         let wish_id = from_bson(wish_res.inserted_id)?;
 
         wish_by_id(db, wish_id).await
     } else {
-        Err(Error::new("记录已存在"))
+        Err(Error::new(ERR_RECORD_EXIST))
     }
-}
-
-// get wish by its id
-async fn wish_by_id(db: &Database, id: ObjectId) -> GqlResult<Wish> {
-    let coll = db.collection::<Document>("wishes");
-
-    let wish_document = coll
-        .find_one(doc! {"_id": id}, None)
-        .await
-        .expect("查询未成功")
-        .unwrap();
-
-    let wish: Wish = from_document(wish_document)?;
-    Ok(wish)
 }
 
 // get all wishes
 pub async fn wishes(db: &Database, status: i8) -> GqlResult<Vec<Wish>> {
-    let coll = db.collection::<Document>("wishes");
+    let coll = db.collection::<Document>(COLL_WISHES);
     let mut cursor = coll.find(doc! { "status": status as i32 }, None).await?;
 
     let mut wishes: Vec<Wish> = vec![];
@@ -414,8 +403,22 @@ pub async fn wish_random(db: &Database, username: String) -> GqlResult<Wish> {
     }
 }
 
+// get wish by its id
+async fn wish_by_id(db: &Database, id: ObjectId) -> GqlResult<Wish> {
+    let coll = db.collection::<Document>(COLL_WISHES);
+
+    let wish_document = coll
+        .find_one(doc! {"_id": id}, None)
+        .await
+        .expect(ERR_FIND_PANIC)
+        .unwrap();
+
+    let wish: Wish = from_document(wish_document)?;
+    Ok(wish)
+}
+
 async fn wish_one(db: &Database, match_doc: Document) -> GqlResult<Wish> {
-    let coll = db.collection::<Document>("wishes");
+    let coll = db.collection::<Document>(COLL_WISHES);
     let mut cursor = coll
         .aggregate(vec![doc! {"$sample": {"size": 1}}, match_doc], None)
         .await?;
@@ -424,6 +427,6 @@ async fn wish_one(db: &Database, match_doc: Document) -> GqlResult<Wish> {
         let wish = from_document(document_res?)?;
         Ok(wish)
     } else {
-        Err(Error::new("查询未成功"))
+        Err(Error::new(ERR_FIND_PANIC))
     }
 }

@@ -8,7 +8,6 @@ use crate::util::{constant::CFG, common::get_lang_msg};
 
 pub async fn send_email(
     language: String,
-    user_id: String,
     username: String,
     nickname: String,
     email_to: String,
@@ -32,7 +31,6 @@ pub async fn send_email(
 
     email_args.insert("domain".to_string(), json!(domain));
     email_args.insert("language".to_string(), json!(language));
-    email_args.insert("user_id".to_string(), json!(user_id));
 
     let email_body = get_lang_msg(
         language.as_str(),

@@ -1,12 +1,13 @@
 use std::{path::PathBuf, fs::read_to_string, borrow::Cow};
 use tide::Request;
 use fluent_bundle::{FluentBundle, FluentResource, FluentArgs, FluentValue};
-use serde_json::{Map, Value};
+use serde_json::{Map, Value, json};
+use graphql_client::{GraphQLQuery, Response as GqlResponse};
 
 use crate::State;
 use crate::util::constant::CFG;
 
-use crate::models::users::SignStatus;
+use crate::models::users::{SignStatus, UserByUsernameData, user_by_username_data};
 
 pub async fn gql_uri() -> String {
     let gql_prot = CFG.get("GQL_PROT").unwrap();
@@ -127,4 +128,23 @@ fn get_lang_res(root_tpl: &str) -> Vec<&str> {
     }
 
     tpl_lang_res
+}
+
+pub async fn get_user_by_username(sign_username: String) -> Value {
+    let user_by_username_build_query =
+        UserByUsernameData::build_query(user_by_username_data::Variables {
+            username: sign_username,
+        });
+    let user_by_username_query = json!(user_by_username_build_query);
+
+    let user_by_username_resp_body: GqlResponse<serde_json::Value> =
+        surf::post(&gql_uri().await)
+            .body(user_by_username_query)
+            .recv_json()
+            .await
+            .unwrap();
+    let user_by_username_resp_data = user_by_username_resp_body.data.unwrap();
+
+    let user = user_by_username_resp_data["userByUsername"].to_owned();
+    user
 }

@@ -32,7 +32,7 @@
           {{#each pagination.currentItems as |creation_item|}}
             <article class="s-card m8 p8 bs-sm bar-md h:bs-md sm:ai-center">
               <a class="my4 fs-body3 fw-bold fc-theme-secondary-400"
-                href="/{{ ../language }}/admin/creation/{{ creation_item.id }}" target="_blank">
+                href="/{{ ../language }}/admin/creation/{{ creation_item.slug }}" target="_blank">
                 {{#if (str-cmp creation_item.status -3) }}
                   <span class="mr2 s-tag s-tag__moderator fw-normal fs-caption">
                     {{ lang "admin-creation-deleted" }}
@@ -87,18 +87,18 @@
               </p>
               <p class="d-flex fw-wrap fc-medium">
                 <span class="s-btn-group">
-                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}"
-                    target="_blank">
+                  <a class="s-btn s-btn__xs s-btn__outlined"
+                    href="/{{ ../language }}/admin/creation/{{ creation_item.slug }}" target="_blank">
                     <strong>{{ creation_item.hits }}</strong>
                     {{ lang "hits" }}
                   </a>
-                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}"
-                    target="_blank">
+                  <button class="s-btn s-btn__xs s-btn__outlined"
+                    onclick="updateCreationOneField(this, '{{ ../language }}', '{{ creation_item.slug }}', 'stars', 1)">
                     <strong>{{ creation_item.stars }}</strong>
                     {{ lang "stars" }}
-                  </a>
-                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}"
-                    target="_blank">
+                  </button>
+                  <a class="s-btn s-btn__xs s-btn__outlined"
+                    href="/{{ ../language }}/admin/creation/{{ creation_item.slug }}" target="_blank">
                     <strong>{{ creation_item.insides }}</strong>
                     {{ lang "insides" }}
                   </a>

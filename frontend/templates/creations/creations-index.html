@@ -63,7 +63,7 @@
         <div class="d-grid grid__3 lg:grid__2 sm:grid__1 g12 w100 wmx100 mx-auto">
           {{#each pagination.currentItems as |creation_item|}}
             <article class="s-card m8 p8 bs-sm bar-md h:bs-md sm:ai-center">
-              <a href="/{{ ../language }}/creation/{{ creation_item.id }}">
+              <a href="/{{ ../language }}/creation/{{ creation_item.slug }}">
                 <img src='/files/creations/{{ cover-img creation_item.coverImage.location "-thumbnail" }}'>
                 <h2 class="my4 pl2 fs-title fc-theme-secondary-400 truncate">
                   {{ creation_item.subject }}
@@ -84,19 +84,23 @@
               <p class="d-flex fw-wrap pl2 fc-medium">
                 <span class="s-btn-group">
                   {{#if (str-cmp creation_item.status 2 "gte") }}
-                    <a class="s-btn s-btn__xs s-btn__outlined fc-danger" href="/{{ language }}/creations/recommended">
+                    <a class="s-btn s-btn__xs s-btn__outlined fc-danger"
+                      href="/{{ ../language }}/creations/recommended">
                       {{ lang "creations-filter-recommended" }}
                     </a>
                   {{/if}}
-                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}">
+                  <a class="s-btn s-btn__xs s-btn__outlined"
+                    href="/{{ ../language }}/creation/{{ creation_item.slug }}">
                     <strong>{{ creation_item.hits }}</strong>
                     {{ lang "hits" }}
                   </a>
-                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}">
+                  <button class="s-btn s-btn__xs s-btn__outlined"
+                    onclick="updateCreationOneField(this, '{{ ../language }}', '{{ creation_item.slug }}', 'stars', 1)">
                     <strong>{{ creation_item.stars }}</strong>
                     {{ lang "stars" }}
-                  </a>
-                  <a class="s-btn s-btn__xs s-btn__outlined" href="/{{ ../language }}/creation/{{ creation_item.id }}">
+                  </button>
+                  <a class="s-btn s-btn__xs s-btn__outlined"
+                    href="/{{ ../language }}/creation/{{ creation_item.slug }}">
                     <strong>{{ creation_item.insides }}</strong>
                     {{ lang "insides" }}
                   </a>

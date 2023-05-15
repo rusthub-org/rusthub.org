@@ -41,3 +41,23 @@ function str2arr(str) {
 
     return arr;
 }
+
+function updateCreationOneField(field_obj, language, creation_slug, field_name, field_val) {
+    $.ajax({
+        type: "get",
+        url: "/" + language + "/creation/" + creation_slug + "/" + field_name + "/" + field_val,
+        processData: false,
+        contentType: false,
+        success: function (resp) {
+            if (resp["done"]) {
+                if (field_name == "stars") {
+                    let stars_strong = $(field_obj).children("strong");
+                    let stars = parseInt(stars_strong.text());
+                    stars_strong.text(stars + 1);
+
+                    $(field_obj).prop("onclick", null).off("click");
+                }
+            }
+        }
+    });
+}

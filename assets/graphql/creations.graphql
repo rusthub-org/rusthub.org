@@ -14,6 +14,7 @@ fragment CreationsResultFragment on CreationsResult {
   currentItems {
     id
     subject
+    slug
     updatedAtYmd
     updatedAtYmd8
     hits
@@ -139,13 +140,14 @@ mutation CreationNewData(
 }
 
 query CreationData(
-  $creationId: ObjectId!
+  $creationSlug: String!
 ) {
-  creationById(
-    creationId: $creationId
+  creationBySlug(
+    creationSlug: $creationSlug
   ) {
     id
     subject
+    slug
     content
     contentHtml
     website
@@ -182,17 +184,17 @@ query CreationData(
   }
 }
 
-mutation CreationUpdateOneFieldByIdData(
-  $creationId: ObjectId!
+mutation CreationUpdateOneFieldBySlugData(
+  $creationSlug: String!
   $fieldName: String!
   $fieldVal: String!
 ) {
-  creationUpdateOneFieldById(
-    creationId: $creationId
+  creationUpdateOneFieldBySlug(
+    creationSlug: $creationSlug
     fieldName: $fieldName
     fieldVal: $fieldVal
     ) {
-      id
+      slug
   }
 }
 

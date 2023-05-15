@@ -11,10 +11,7 @@ use crate::users::{
     self,
     models::{User, SignInfo, Wish},
 };
-use crate::creations::{
-    self,
-    models::{Creation, File},
-};
+use crate::creations::{self, models::Creation};
 use crate::topics::{self, models::Topic};
 
 pub struct QueryRoot;
@@ -30,26 +27,6 @@ impl QueryRoot {
     ) -> GqlResult<SignInfo> {
         let db = &ctx.data_unchecked::<DataSource>().db;
         users::services::user_sign_in(db, signature, password).await
-    }
-
-    // get user info by id
-    async fn user_by_id(
-        &self,
-        ctx: &Context<'_>,
-        id: ObjectId,
-    ) -> GqlResult<User> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        users::services::user_by_id(db, id).await
-    }
-
-    // get user info by email
-    async fn user_by_email(
-        &self,
-        ctx: &Context<'_>,
-        email: String,
-    ) -> GqlResult<User> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        users::services::user_by_email(db, email).await
     }
 
     // get user info by username
@@ -75,14 +52,14 @@ impl QueryRoot {
         users::services::users(db, from_page, first_oid, last_oid, status).await
     }
 
-    // Get creation by its id
-    async fn creation_by_id(
+    // Get creation by its slug
+    async fn creation_by_slug(
         &self,
         ctx: &Context<'_>,
-        creation_id: ObjectId,
+        creation_slug: String,
     ) -> GqlResult<Creation> {
         let db = &ctx.data_unchecked::<DataSource>().db;
-        creations::services::creation_by_id(db, creation_id).await
+        creations::services::creation_by_slug(db, creation_slug).await
     }
 
     // get random creation
@@ -124,23 +101,6 @@ impl QueryRoot {
         .await
     }
 
-    // Get all creations of one user by user_id
-    async fn creations_by_user_id(
-        &self,
-        ctx: &Context<'_>,
-        user_id: ObjectId,
-        from_page: u32,
-        first_oid: String,
-        last_oid: String,
-        status: i8,
-    ) -> GqlResult<CreationsResult> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        creations::services::creations_by_user_id(
-            db, user_id, from_page, first_oid, last_oid, status,
-        )
-        .await
-    }
-
     // Get all creations of one user by username
     async fn creations_by_username(
         &self,
@@ -154,23 +114,6 @@ impl QueryRoot {
         let db = &ctx.data_unchecked::<DataSource>().db;
         creations::services::creations_by_username(
             db, username, from_page, first_oid, last_oid, status,
-        )
-        .await
-    }
-
-    // Get all creations by topic_id
-    async fn creations_by_topic_id(
-        &self,
-        ctx: &Context<'_>,
-        topic_id: ObjectId,
-        from_page: u32,
-        first_oid: String,
-        last_oid: String,
-        status: i8,
-    ) -> GqlResult<CreationsResult> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        creations::services::creations_by_topic_id(
-            db, topic_id, from_page, first_oid, last_oid, status,
         )
         .await
     }
@@ -209,62 +152,6 @@ impl QueryRoot {
         .await
     }
 
-    // get file by id
-    async fn file_by_id(
-        &self,
-        ctx: &Context<'_>,
-        id: ObjectId,
-    ) -> GqlResult<File> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        creations::services::file_by_id(db, id).await
-    }
-
-    // get file of one creation by file's kind & creation_id
-    async fn file_by_kind_creation_id(
-        &self,
-        ctx: &Context<'_>,
-        creation_id: ObjectId,
-        file_kind: i8,
-        file_status: i8,
-    ) -> GqlResult<File> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        creations::services::file_by_kind_creation_id(
-            db,
-            creation_id,
-            file_kind,
-            file_status,
-        )
-        .await
-    }
-
-    // get all files of one creation by file's kind & creation_id
-    async fn files_by_kind_creation_id(
-        &self,
-        ctx: &Context<'_>,
-        creation_id: ObjectId,
-        file_kind: i8,
-        file_status: i8,
-    ) -> GqlResult<Vec<File>> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        creations::services::files_by_kind_creation_id(
-            db,
-            creation_id,
-            file_kind,
-            file_status,
-        )
-        .await
-    }
-
-    // get topic info by id
-    async fn topic_by_id(
-        &self,
-        ctx: &Context<'_>,
-        id: ObjectId,
-    ) -> GqlResult<Topic> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        topics::services::topic_by_id(db, id).await
-    }
-
     // get topic info by slug
     async fn topic_by_slug(
         &self,
@@ -273,62 +160,6 @@ impl QueryRoot {
     ) -> GqlResult<Topic> {
         let db = &ctx.data_unchecked::<DataSource>().db;
         topics::services::topic_by_slug(db, slug).await
-    }
-
-    // get all topics
-    async fn topics(&self, ctx: &Context<'_>) -> GqlResult<Vec<Topic>> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        topics::services::topics(db).await
-    }
-
-    // get topics by creation_id
-    async fn topics_by_creation_id(
-        &self,
-        ctx: &Context<'_>,
-        creation_id: ObjectId,
-    ) -> GqlResult<Vec<Topic>> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        topics::services::topics_by_creation_id(db, creation_id).await
-    }
-
-    // get users' keywords by user_id
-    async fn keywords_by_user_id(
-        &self,
-        ctx: &Context<'_>,
-        user_id: ObjectId,
-    ) -> GqlResult<Vec<Topic>> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        topics::services::keywords_by_user_id(db, user_id).await
-    }
-
-    // get users' keywords by username
-    async fn keywords_by_username(
-        &self,
-        ctx: &Context<'_>,
-        username: String,
-    ) -> GqlResult<Vec<Topic>> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        topics::services::keywords_by_username(db, username).await
-    }
-
-    // get topics by user_id
-    async fn topics_by_user_id(
-        &self,
-        ctx: &Context<'_>,
-        user_id: ObjectId,
-    ) -> GqlResult<Vec<Topic>> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        topics::services::topics_by_user_id(db, user_id).await
-    }
-
-    // get topics by username
-    async fn topics_by_username(
-        &self,
-        ctx: &Context<'_>,
-        username: String,
-    ) -> GqlResult<Vec<Topic>> {
-        let db = &ctx.data_unchecked::<DataSource>().db;
-        topics::services::topics_by_username(db, username).await
     }
 
     // get all wishes
