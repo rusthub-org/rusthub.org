@@ -13,12 +13,12 @@ dotenv = "0.15"
 lazy_static = "1.4"
 femme = "2.2"
 
-async-graphql = { version = "5.0", features = ["bson", "chrono"] }
-mongodb = { version = "2.5", default-features = false, features = [
+async-graphql = { version = "6.0", features = ["bson", "chrono"] }
+mongodb = { version = "2.6", default-features = false, features = [
   "async-std-runtime",
 ] }
 
-regex = "1.8"
+regex = "1.9"
 serde = { version = "1.0", features = ["derive"] }
 chrono = "0.4"
 jsonwebtoken = "8.3"

@@ -1,6 +1,8 @@
 site-name = RustHub
-site-slogan = Ideas => Creations
-site-intro = Rust ideas yesterday, shining creations today!
+site-slogan = Idea => Creation
+site-intro = Websites, apps, tools, etc, ...<br>
+    Discovering new ideas, exploring new creations.<br>
+    Rust ideas yesterday, shining creations today!
 
 switch-theme = Switch Theme
 random = R

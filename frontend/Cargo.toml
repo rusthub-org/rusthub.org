@@ -17,14 +17,14 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
 surf = "2.3"
-graphql_client = "0.12"
+graphql_client = "0.13"
 handlebars = { version = "4.3", features = ["script_helper"] }
 
 multer = "2.1"
-percent-encoding = "2.2"
+percent-encoding = "2.3"
 lettre = "0.10"
 fluent-bundle = "0.15"
 
 [dev-dependencies]
-rhai = "1.14"
+rhai = "1.15"
 kv-log-macro = "1.0"

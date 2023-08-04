@@ -56,7 +56,7 @@ register-failed-username-email-exists = Username or Email is exists
 email-subject = { $nickname } ({ $username }), account activation email from RustHub.org
 email-body = Hi, { $nickname } ({ $username })! 
     <br><br>
-    This email sent from RustHub.org, it is your RustHub account activation email.
+    This email sent from RustHub.org, it is activation email for your account.
     <br><br>
     Please visit URL: https://{ $domain }/{ $language }/user/{ $username }/activate to activate your account.
     <br><br>
